@@ -1,0 +1,90 @@
+/* SignUpPage.css */
+.signup-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Creates consistent space between inputs */
+}
+
+.signup-form input[type="text"],
+.signup-form input[type="email"],
+.signup-form input[type="password"],
+.signup-form input[type="date"],
+.signup-form select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px; /* Larger font size for better readability */
+}
+
+.signup-form button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.signup-form button:hover {
+  background-color: #0056b3;
+}
+
+.google-btn, .facebook-btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+  color: white;
+}
+
+.google-btn {
+  background-color: #db4437;
+}
+
+.facebook-btn {
+  background-color: #4267B2;
+}
+
+.google-btn:hover {
+  background-color: #c1351e;
+}
+
+.facebook-btn:hover {
+  background-color: #365899;
+}
+
+.signin-link {
+  margin-top: 15px;
+  font-size: 0.9em;
+}
+
+.signin-link a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.signin-link a:hover {
+  text-decoration: underline;
+}
+
+h2 {
+  color: #333;
+  font-size: 1.5em;
+}
+
+  

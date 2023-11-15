@@ -1,0 +1,31 @@
+/* Footer.css */
+.footer {
+    background-color: #222;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+  }
+  
+  .footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .footer-links,
+  .social-links {
+    margin-top: 10px;
+  }
+  
+  .footer-links a,
+  .social-links a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+  }
+  
+  .footer-links a:hover,
+  .social-links a:hover {
+    text-decoration: underline;
+  }
+  

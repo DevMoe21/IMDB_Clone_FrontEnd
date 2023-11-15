@@ -1,0 +1,79 @@
+.homepage {
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  margin: 20px;
+}
+
+.title-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.homepage h1 {
+  color: #444; /* Slightly darker color for better contrast */
+  font-size: 2em; /* Larger font size for main title */
+  font-weight: bold; /* Bold font for emphasis */
+}
+
+.search-input {
+  display: block;
+  width: 60%; /* Adjust width of search input */
+  padding: 10px;
+  margin: 20px auto;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+}
+
+.movie-carousel, .featured-today, .coming-soon, .top-box-office {
+  margin-bottom: 30px;
+}
+
+.movie-carousel h2, .featured-today h2, .coming-soon h2, .top-box-office h2 {
+  margin-bottom: 20px;
+  text-align: left;
+  color: #444;
+  font-size: 1.4em; /* Slightly larger font size for section headers */
+}
+
+.movie {
+  text-align: center;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+
+.movie img {
+  width: 150px;
+  height: 225px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.movie h3 {
+  margin-top: 10px;
+  font-size: 1em;
+  color: #555;
+}
+
+/* Hover effect for movie tiles */
+.movie:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px);
+}
+
+/* Responsive Design Adjustments */
+@media screen and (max-width: 768px) {
+  .movie img {
+    width: 100px;
+    height: 150px;
+  }
+
+  .search-input {
+    width: 80%; /* Wider search input on smaller screens */
+  }
+}
+

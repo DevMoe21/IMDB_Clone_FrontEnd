@@ -1,0 +1,102 @@
+/* MovieDetailsPage.css */
+.movie-details-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f8f9fa; /* Light grey background */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .movie-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .movie-poster {
+    flex-shrink: 0;
+    width: 300px; /* Fixed width for the poster */
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .movie-content {
+    flex-grow: 1;
+    max-width: calc(100% - 320px); /* Account for poster and gap */
+  }
+  
+  .movie-title {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #343a40; /* Dark grey color */
+  }
+  
+  .movie-genre {
+    font-size: 1em;
+    color: #6c757d; /* Bootstrap secondary text color */
+    margin-bottom: 10px;
+  }
+  
+  .movie-info {
+    font-size: 1em;
+    color: #6c757d;
+    margin-bottom: 20px;
+  }
+  
+  .movie-cast,
+  .movie-reviews {
+    margin-bottom: 20px;
+  }
+  
+  .cast-member,
+  .review {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .cast-member img,
+  .review img {
+    width: 50px; /* Fixed size for cast and review images */
+    height: 50px;
+    border-radius: 50%; /* Circular images */
+    margin-right: 10px;
+  }
+  
+  .cast-member-name,
+  .review-author {
+    font-weight: bold;
+    color: #343a40;
+  }
+  
+  .review-content {
+    color: #495057;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .movie-header {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .movie-poster,
+    .movie-content {
+      width: 100%;
+      max-width: 100%;
+    }
+  
+    .movie-content {
+      margin-top: 20px;
+    }
+  }
+  
+  /* Add any additional responsive adjustments as needed */
+  
