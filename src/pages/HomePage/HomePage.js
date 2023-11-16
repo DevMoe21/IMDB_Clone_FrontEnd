@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 //import Slider from 'react-slick';
 import { useRef} from 'react';
@@ -188,18 +188,34 @@ function TopBoxOffice({ topMovies, onMovieClick, onAddToWatchlist }) {
 
 // HomePage Component
 function HomePage() {
-  const [searchTerm, setSearchTerm] = useState(''); // Search term state
-  const navigate = useNavigate(); // Define the navigate function
-  
-  //const [watchlist, setWatchlist] = useState([]); // State for the watchlist
+  const [movies, setMovies] = useState([]); // State to store fetched movies
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
+  const [recentlyAddedMovies, setRecentlyAddedMovies] = useState([]);
+  const [featuredMovies, setFeaturedMovies] = useState([]);
+  const [comingSoonMovies, setComingSoonMovies] = useState([]);
+  const [topBoxOfficeMovies, setTopBoxOfficeMovies] = useState([]);
 
-  // Function to add a movie to the watchlist
-  // const addToWatchlist = (movieId) => {
-  //   if (!watchlist.includes(movieId)) {
-  //     setWatchlist([...watchlist, movieId]);
-  //   }
-  // };
-  
+  useEffect(() => {
+    // Fetch movies from your server
+    fetch('http://localhost:5000/movies')
+      .then(response => response.json())
+      .then(data => setRecentlyAddedMovies(data))
+      .catch(error => console.error('Error:', error));
+    const fetchMovies = async () => {
+      try {
+        const response = await fetch('/movies'); // Adjust the URL based on your server configuration
+        if (!response.ok) throw new Error('Network response was not ok');
+        const moviesData = await response.json();
+        setMovies(moviesData);
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+      }
+    };
+
+    fetchMovies();
+  }, []);
+ 
   // Function to update the search term
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -215,11 +231,7 @@ function HomePage() {
     navigate(`/movie/${movieId}`); // Navigate to MovieDetailsPage with movieId
   };
 
-  // Mock Data (replace with actual data fetching)
-  //const recentlyAddedMovies = dummyMovies; // Populate with movie data
-  //const featuredMovies = dummyMovies; // Populate with movie data
-  //const comingSoonMovies = dummyMovies; // Populate with movie data
-  //const topBoxOfficeMovies =dummyMovies; // Populate with movie data
+
 
   return (
     <div className="homepage">
@@ -233,10 +245,13 @@ function HomePage() {
           className="search-input"
         />
       </div>
-      <MovieCarousel movies={filteredMovies} onMovieClick={handleMovieClick} />
-      <FeaturedToday featuredMovies={filteredMovies} onMovieClick={handleMovieClick} />
-      <ComingSoon comingSoonMovies={filteredMovies} onMovieClick={handleMovieClick} />
-      <TopBoxOffice topMovies={filteredMovies} onMovieClick={handleMovieClick} />
+      <div className="homepage">
+      {/* Pass the fetched movie data to your components */}
+      <MovieCarousel movies={recentlyAddedMovies} onMovieClick={handleMovieClick} /* other props */ />
+      <FeaturedToday featuredMovies={featuredMovies} onMovieClick={handleMovieClick}/* other props */ />
+      <ComingSoon comingSoonMovies={comingSoonMovies} onMovieClick={handleMovieClick}/* other props */ />
+      <TopBoxOffice topMovies={topBoxOfficeMovies} onMovieClick={handleMovieClick}/* other props */ />
+      </div>    
     </div>
   );
 }
