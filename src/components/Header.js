@@ -16,15 +16,15 @@ function Header() {
         {user ? (
           <>
             <Link to="/user-profile" className="nav-link">Profile</Link>
-            {/* Add the user information section */}
-            <div className="user-info">
+            <Link to={`/user/${user.username}`} className="user-info">
+              {/* Wrap user info with Link to UserProfilePage */}
               <img
                 src={user.profilePicture} // Replace with the actual source of the user's profile picture
                 alt={`${user.username}'s profile`}
                 className="user-avatar"
               />
               <span className="user-username">{user.username}</span>
-            </div>
+            </Link>
           </>
         ) : (
           <>
@@ -32,6 +32,8 @@ function Header() {
             <Link to="/signup" className="nav-link">Sign Up</Link>
           </>
         )}
+        {/* Mock link to a MovieDetailsPage */}
+        <Link to="/movie/some-movie-id" className="nav-link">Movie Details</Link>
       </nav>
     </header>
   );

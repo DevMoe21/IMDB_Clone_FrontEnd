@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import './MovieDetailsPage.css';
 // Import other necessary components and libraries
 
 function MovieDetailsPage() {
-    const { movieId } = useParams(); // Get movieId from the URL
+    const { movieId } = useParams();
     const [movieDetails, setMovieDetails] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,7 +14,7 @@ function MovieDetailsPage() {
             setIsLoading(true);
             setError(null);
             try {
-                // Replace this URL with your actual API endpoint
+                // Replace with your actual API endpoint
                 const response = await fetch(`https://yourapi.com/movies/${movieId}`);
                 if (!response.ok) throw new Error('Data not found');
                 const data = await response.json();
@@ -34,30 +35,56 @@ function MovieDetailsPage() {
 
     return (
         <div className="movie-details-container">
-            {/* Display movie details */}
             <img src={movieDetails.poster} alt={movieDetails.title} className="movie-poster" />
             <h1>{movieDetails.title}</h1>
-            {/* ... other movie details ... */}
+            <p><strong>Release Date:</strong> {movieDetails.releaseDate}</p>
+            <p><strong>Rating:</strong> {movieDetails.rating}</p>
+            <p><strong>Description:</strong> {movieDetails.description}</p>
+
+            <h2>Trailers</h2>
+            {/* Example of mapping through trailers */}
             <div className="movie-trailers">
-                {/* Map through trailers and display them */}
+                {movieDetails.trailers.map(trailer => (
+                    <div key={trailer.id}>
+                        <iframe
+                            src={trailer.link}
+                            title={trailer.title}
+                            frameborder="0"
+                            allowfullscreen
+                        ></iframe>
+                    </div>
+                ))}
             </div>
+
+            <h2>Genres</h2>
             <div className="movie-genres">
-                {/* Display movie genres */}
+                {movieDetails.genres.join(', ')}
             </div>
-            <div className="movie-info">
-                {/* Display movie's directors, writers, stars */}
-            </div>
-            <div className="movie-reviews">
-                {/* Display and sort reviews */}
-                {/* Add functionality to add new review */}
-            </div>
+
+            <h2>Cast</h2>
             <div className="movie-cast">
-                {/* Display top cast members */}
+                {/* Example of displaying cast members */}
+                {movieDetails.cast.map(member => (
+                    <div key={member.id} className="cast-member">
+                        <img src={member.photo} alt={member.name} />
+                        <p>{member.name} as {member.character}</p>
+                    </div>
+                ))}
             </div>
-            {/* Other movie details */}
+
+            <h2>Reviews</h2>
+            <div className="movie-reviews">
+                {/* Example of displaying and sorting reviews */}
+                {movieDetails.reviews.map(review => (
+                    <div key={review.id} className="review">
+                        <p><strong>{review.author}:</strong> {review.content}</p>
+                    </div>
+                ))}
+            </div>
+
+            {/* Include other movie details as needed */}
         </div>
     );
 }
 
 export default MovieDetailsPage;
-

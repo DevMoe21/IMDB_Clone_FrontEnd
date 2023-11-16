@@ -1,79 +1,283 @@
 .homepage {
   font-family: 'Arial', sans-serif;
-  color: #333;
-  margin: 20px;
+  background-color: #1a1a1a; /* Dark background */
+  color: #FFF; /* White text color */
+  margin: 0; /* Remove margin */
+  padding: 20px;
 }
 
 .title-section {
   text-align: center;
   margin-bottom: 40px;
+  color: #FFF; /* White text color */
+}
+.section-title {
+  color: #C0A0D0; /* Harmonize the color of all section titles */
+  font-size: 1.5em;
+  margin-left: 20px;
 }
 
 .homepage h1 {
-  color: #444; /* Slightly darker color for better contrast */
-  font-size: 2em; /* Larger font size for main title */
-  font-weight: bold; /* Bold font for emphasis */
+  color: #C0A0D0; /* Purple color for main title */
+  font-size: 2.5em;
+  font-weight: bold;
 }
 
 .search-input {
   display: block;
-  width: 60%; /* Adjust width of search input */
+  width: 60%;
   padding: 10px;
   margin: 20px auto;
   border-radius: 4px;
-  border: 1px solid #ccc;
+  border: 1px solid #C0A0D0; /* Purple border */
+  background-color: #292929; /* Slightly lighter background */
+  color: #FFF; /* White text color */
   font-size: 1em;
 }
 
-.movie-carousel, .featured-today, .coming-soon, .top-box-office {
-  margin-bottom: 30px;
+.movie-carousel {
+  overflow: hidden;
+  position: relative;
 }
 
-.movie-carousel h2, .featured-today h2, .coming-soon h2, .top-box-office h2 {
-  margin-bottom: 20px;
-  text-align: left;
-  color: #444;
-  font-size: 1.4em; /* Slightly larger font size for section headers */
+.carousel-container {
+  width: 100%;
+  position: relative;
 }
 
+.carousel-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(192, 160, 208, 0.5) transparent;
+}
+
+.carousel-track {
+  -ms-overflow-style: none;  /* Internet Explorer and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
+
+.movie-slide {
+  flex: none;
+  scroll-snap-align: start;
+  position: relative;
+  width: 100%;
+  height: 500px; /* Adjust height as needed */
+}
+
+.movie-info-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+  color: white;
+  width: 100%;
+  padding: 20px;
+}
+
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  z-index: 10;
+  border: none;
+  background: none;
+  color: white;
+  font-size: 2em;
+  cursor: pointer;
+}
+
+.carousel-control.left {
+  left: 10px;
+}
+
+.carousel-control.right {
+  right: 10px;
+}
+
+.carousel-track::-webkit-scrollbar {
+  height: 10px;
+  background: transparent; /* Transparent track */
+}
+
+.carousel-track::-webkit-scrollbar-thumb {
+  background: rgba(192, 160, 208, 0.5); /* Semi-transparent thumb */
+  border-radius: 5px;
+}
+
+.carousel-track::-webkit-scrollbar-thumb:hover {
+  background: rgba(192, 160, 208, 0.7); /* Slightly darker on hover */
+}
+
+.movie-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.movie-carousel h2 {
+  color: #C0A0D0; /* Purple color for section headers */
+  font-size: 1.5em;
+  margin-left: 20px;
+}
+
+.movie-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding-left: 20px;
+  scroll-behavior: smooth;
+}
+
+.movie-carousel::-webkit-scrollbar {
+  height: 8px;
+}
+
+.movie-carousel::-webkit-scrollbar-thumb {
+  background: #C0A0D0;
+  border-radius: 4px;
+}
+
+.movie:hover img {
+  transform: scale(1.03); /* Slight enlargement on hover */
+}
+
+/* You might also want to adjust the overall movie container size and styling */
 .movie {
-  text-align: center;
-  padding: 10px;
-  background-color: #ffffff;
+  display: inline-block;
+  width: 200px; /* Adjust based on the size you want */
+  flex: 0 0 auto; /* Don't grow, don't shrink, and don't allow wrapping */
+  background-color: #292929;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  margin-right: 20px;
 }
 
+.featured-today, .coming-soon, .top-box-office {
+  position: relative;
+}
+
+.scroll-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.scroll-button.left {
+  left: 0;
+}
+
+.scroll-button.right {
+  right: 0;
+}
+
+.movie-grid {
+  overflow-x: hidden;
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
 
 .movie img {
-  width: 150px;
-  height: 225px;
+  width: 100%;
+  height: auto;
   object-fit: cover;
   border-radius: 4px;
 }
 
-.movie h3 {
-  margin-top: 10px;
-  font-size: 1em;
-  color: #555;
+.movie-poster {
+  /* Make the image responsive to container size */
+  max-width: 100%;
+  height: auto;
+  display: block; /* Remove extra space below the image */
 }
 
-/* Hover effect for movie tiles */
+.movie-info {
+  padding: 10px;
+}
+
+
+.movie h3 {
+  font-size: 1em;
+  color: #FFF;
+  margin: 10px 0 5px 0;
+}
+
 .movie:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 16px rgba(255, 255, 255, 0.3);
   transform: translateY(-4px);
 }
+
+.movie p {
+  color: #DDD; /* Lighter text color for ratings and reviews */
+  font-size: 0.8em; /* Reduce font size for a more balanced look */
+  margin-top: 2px; /* Reduce spacing to compact the layout */
+}
+.featured-today h2, .coming-soon h2, .top-box-office h2 {
+  color: #C0A0D0; 
+}
+
+/* Add to Watchlist Button Styles */
+/* Add to Watchlist Button Styles */
+.addToWatchlist {
+  background-color: #C0A0D0; /* Blue background */
+  color: white;             /* White text */
+  border: none;             /* No border */
+  padding: 10px 15px;       /* Padding around text */
+  text-align: center;       /* Center text */
+  text-decoration: none;    /* No underline */
+  display: inline-block;    /* Inline block level element */
+  font-size: 16px;          /* Font size */
+  margin: 4px 2px;          /* Margin */
+  cursor: pointer;          /* Cursor pointer on hover */
+  transition: all 0.3s ease 0s; /* Smooth transition for hover effect */
+  border-radius: 5px;       /* Rounded corners */
+  box-shadow: 0 4px #999;   /* Box shadow for 3D effect */
+}
+
+.addToWatchlist:hover {
+  background-color: #73006d; /* Darker shade of blue on hover */
+  box-shadow: 0 2px #666;    /* Adjust box shadow for hover effect */
+  transform: translateY(2px); /* Slight move up */
+}
+
 
 /* Responsive Design Adjustments */
 @media screen and (max-width: 768px) {
   .movie img {
-    width: 100px;
-    height: 150px;
+    width: 150px; /* Adjust width for smaller screens */
+     /* Adjust height for smaller screens */
   }
 
-  .search-input {
-    width: 80%; /* Wider search input on smaller screens */
+  movie-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .movie p {
+    font-size: 0.7em; /* Smaller text on smaller screens */
+  }
+
+  .movie-carousel h2 {
+    
+    margin-left: 10px;
+  }
+  .movie-scroll-container {
+    padding-left: 10px;
+  }
+  .scroll-button {
+    display: none;
   }
 }
 
