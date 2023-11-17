@@ -5,6 +5,7 @@ import { useRef} from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './HomePage.css';
+import axios from 'axios';  //axios is used to make http requests to the server
 
 const dummyMovies = [
   { id: 1, title: "Movie 1", poster: "https://via.placeholder.com/150", smallPoster: "https://via.placeholder.com/100", rating: 8.5, review: "Great movie!" },
@@ -58,8 +59,19 @@ function MovieCarousel({ movies, onMovieClick, onAddToWatchlist }) {
 
 
 // FeaturedToday Component
-function FeaturedToday({ featuredMovies, onMovieClick, onAddToWatchlist }) {
+function FeaturedToday({ onMovieClick, onAddToWatchlist }) {
+  const [featuredMovies, setFeaturedMovies] = useState([]);
   const scrollContainerRef = useRef(null);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/routes/featuredToday')
+      .then(response => {
+        setFeaturedMovies(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
 
   const scrollLeft = () => {
     scrollContainerRef.current.scrollBy({
