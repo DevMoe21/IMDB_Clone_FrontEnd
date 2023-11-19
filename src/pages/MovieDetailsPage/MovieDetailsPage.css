@@ -1,81 +1,68 @@
 /* Base Styles */
-.movie-details-container {
-  color: white;
-  background-color: black;
-  font-family: 'Arial', sans-serif;
-  padding: 20px;
-  max-width: 800px;
-  margin: auto;
+.movie-details {
+    color: white;
+    background-color: black;
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    width: 100%;
+    margin: 0;
 }
 
-.movie-poster {
-  width: 100%;
-  border-radius: 10px;
+.movie-details h1 {
+    color: #8a2be2; /* Purple for the main title */
+    margin-bottom: 10px;
 }
 
-h1, h2 {
-  color: #8a2be2; /* Purple for headings */
-  margin-bottom: 10px;
+.movie-details p {
+    color: #ddd; /* Light grey for text */
+    margin-bottom: 10px;
 }
 
-p, .cast-member p, .review {
-  color: #ddd; /* Light grey for text */
+.poster img {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
 }
 
-/* Trailers Section */
-.movie-trailers iframe {
-  width: 100%;
-  height: 300px;
-  border: none;
-  margin-bottom: 20px;
+.watchlist-button {
+    background-color: #8a2be2; /* Purple button */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 20px;
 }
 
-/* Genres Section */
-.movie-genres {
-  background-color: #8a2be2; /* Purple background */
-  padding: 10px;
-  border-radius: 5px;
-  display: inline-block;
+.trailer video {
+    width: 100%;
+    height: 300px;
+    border: none;
+    margin-bottom: 20px;
 }
 
-/* Cast Section */
-.movie-cast {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+.movie-info p {
+    margin-bottom: 5px;
 }
 
-.cast-member {
-  text-align: center;
-  margin: 10px;
+.reviews {
+    margin-top: 20px;
 }
 
-.cast-member img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  border: 3px solid #8a2be2; /* Purple border */
+.reviews h2 {
+    color: #8a2be2; /* Purple for section heading */
 }
 
-/* Reviews Section */
-.movie-reviews .review {
-  background-color: #333; /* Dark grey background */
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
+.reviews .review {
+    background-color: #333; /* Dark grey background */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
 }
 
 /* Responsive Design */
 @media (max-width: 600px) {
-  .movie-cast {
-    flex-direction: column;
-  }
-
-  .movie-cast .cast-member {
-    width: 100%;
-  }
-
-  .movie-trailers iframe {
-    height: 200px;
-  }
+    .trailer video {
+        height: 200px;
+    }
 }
