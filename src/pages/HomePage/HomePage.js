@@ -56,8 +56,7 @@ function MovieCarousel({ movies, onMovieClick, onAddToWatchlist }) {
   );
 }
 
-
-// FeaturedToday Component
+//FeaturedToday Component
 function FeaturedToday({ featuredMovies, onMovieClick, onAddToWatchlist }) {
   const scrollContainerRef = useRef(null);
 
@@ -82,7 +81,7 @@ function FeaturedToday({ featuredMovies, onMovieClick, onAddToWatchlist }) {
       <div className="movie-grid" ref={scrollContainerRef}>
         {featuredMovies.map((movie) => (
           <div key={movie.id} className="movie" onClick={() => onMovieClick(movie.id)}>
-            <img src={movie.smallPoster} alt={movie.name} />
+            <img src={movie.smallPoster} alt={movie.title} />
             <div className="movie-info">
               <h3>{movie.title}</h3>
               <p>Rating: {movie.rating}/10</p>
@@ -91,7 +90,7 @@ function FeaturedToday({ featuredMovies, onMovieClick, onAddToWatchlist }) {
                 e.stopPropagation(); // Prevents the movie click event
                 onAddToWatchlist(movie.id);
               }}>Add to Watchlist</button>
-              </div>
+            </div>
           </div>
         ))}
       </div>
@@ -99,6 +98,7 @@ function FeaturedToday({ featuredMovies, onMovieClick, onAddToWatchlist }) {
     </div>
   );
 }
+
 
 // ComingSoon Component
 function ComingSoon({ comingSoonMovies, onMovieClick, onAddToWatchlist }) {
@@ -186,9 +186,7 @@ function TopBoxOffice({ topMovies, onMovieClick, onAddToWatchlist }) {
   );
 }
 
-// HomePage Component
 function HomePage() {
-  const [movies, setMovies] = useState([]); // State to store fetched movies
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const [recentlyAddedMovies, setRecentlyAddedMovies] = useState([]);
@@ -197,41 +195,58 @@ function HomePage() {
   const [topBoxOfficeMovies, setTopBoxOfficeMovies] = useState([]);
 
   useEffect(() => {
-    // Fetch movies from your server
-    fetch('http://localhost:5000/movies')
-      .then(response => response.json())
-      .then(data => setRecentlyAddedMovies(data))
-      .catch(error => console.error('Error:', error));
-    const fetchMovies = async () => {
+    // Fetch recently added movies
+    const fetchRecentlyAddedMovies = async () => {
       try {
-        const response = await fetch('/movies'); // Adjust the URL based on your server configuration
-        if (!response.ok) throw new Error('Network response was not ok');
-        const moviesData = await response.json();
-        setMovies(moviesData);
+        const response = await fetch('/movies'); // Adjust URL as needed
+        if (!response.ok) throw new Error('Network response was not ok for recently added movies');
+        const data = await response.json();
+        setRecentlyAddedMovies(data);
       } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
+        console.error('There was a problem fetching recently added movies:', error);
       }
     };
 
-    fetchMovies();
+    // Fetch featured today movies
+    const fetchFeaturedTodayMovies = async () => {
+      try {
+        const response = await fetch('/api/featuredToday'); // Adjust URL as needed
+        if (!response.ok) throw new Error('Network response was not ok for featured today');
+        const data = await response.json();
+        setFeaturedMovies(data);
+      } catch (error) {
+        console.error('There was a problem fetching featured today movies:', error);
+      }
+    };
+
+    // Fetch coming soon movies
+    const fetchComingSoonMovies = async () => {
+      // Implement similar logic as above
+
+    };
+
+    // Fetch top box office movies
+    const fetchTopBoxOfficeMovies = async () => {
+      // Implement similar logic as above
+    };
+
+    fetchRecentlyAddedMovies();
+    fetchFeaturedTodayMovies();
+    fetchComingSoonMovies();
+    fetchTopBoxOfficeMovies();
   }, []);
- 
-  // Function to update the search term
+
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  // Filter movies based on the search term
   const filteredMovies = dummyMovies.filter(movie => 
     movie.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Function to handle movie click
   const handleMovieClick = (movieId) => {
-    navigate(`/movie/${movieId}`); // Navigate to MovieDetailsPage with movieId
+    navigate(`/movie/${movieId}`);
   };
-
-
 
   return (
     <div className="homepage">
@@ -245,13 +260,10 @@ function HomePage() {
           className="search-input"
         />
       </div>
-      <div className="homepage">
-      {/* Pass the fetched movie data to your components */}
-      <MovieCarousel movies={recentlyAddedMovies} onMovieClick={handleMovieClick} /* other props */ />
+      <MovieCarousel movies={filteredMovies} onMovieClick={handleMovieClick} /* other props */ />
       <FeaturedToday featuredMovies={featuredMovies} onMovieClick={handleMovieClick}/* other props */ />
       <ComingSoon comingSoonMovies={comingSoonMovies} onMovieClick={handleMovieClick}/* other props */ />
       <TopBoxOffice topMovies={topBoxOfficeMovies} onMovieClick={handleMovieClick}/* other props */ />
-      </div>    
     </div>
   );
 }
