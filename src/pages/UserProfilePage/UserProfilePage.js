@@ -1,68 +1,109 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import { UserContext } from '../UserContext.js';
 import './UserProfilePage.css';
-import Header from '../../components/Header'; // Import the Header component
+import defaultProfilePic from '../../components/default-profile-picture.jpg';
 
 function UserProfilePage() {
-  const { user } = useContext(UserContext);
-  const history = useNavigate(); // Get the history object from the useHistory hook
-  console.log(user);
-  // Check if the user exists
+  const { user, updateUser } = useContext(UserContext);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    username: user.username,
+    gender: user.gender,
+    profilePicture: user.profilePicture,
+    // Add other fields as needed
+  });
+
+  const navigate = useNavigate(); // Updated to use navigate
+
+
   if (!user) {
-    return <div>Loading user data...</div>; // Or handle the user not found scenario appropriately
+    return <div>Loading user data...</div>;
   }
 
   const handleEditProfile = () => {
-    // Implement the logic to edit the user's profile
-    console.log("Edit Profile Clicked");
-};
+    setIsEditing(true);
+  };
 
   const goToWatchlist = () => {
-    history.push('/watchlist'); // Navigate to the watchlist route
-};
+    navigate('/watchlist');
+  };
 
-return (
-  <>
-      <Header /> {/* Include the Header component */}
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    updateUser(editFormData);
+    setIsEditing(false);
+  };
+
+  const handleInputChange = (event) => {
+    setEditFormData({
+      ...editFormData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  return (
+    <div className="user-profile-page">
       <div className="user-profile-container">
+        {isEditing ? (
+          <form onSubmit={handleFormSubmit} className="edit-form">
+            {/* ... existing form fields ... */}
+            <button type="submit" className="btn save-btn">Save Changes</button>
+            <button type="button" onClick={() => setIsEditing(false)} className="btn cancel-btn">Cancel</button>
+          </form>
+        ) : (
           <div className="user-info">
-              <img src={user.profilePicture} alt="Profile" className="profile-picture" />
-              <h1>{user.username}</h1>
-              <p><strong>Gender:</strong> {user.gender}</p>
-              <p><strong>Date of Birth:</strong> {user.dob}</p>
-              <p><strong>Country:</strong> {user.country}</p>
-              <p><strong>Joined:</strong> {user.joinDate}</p>
-              <button className="edit-profile-btn" onClick={handleEditProfile}>Edit Profile</button>
-              <button className="edit-profile-btn" onClick={goToWatchlist}>View Watchlist</button>
+            <img 
+              src={user.profilePicture || defaultProfilePic} 
+              alt="Profile" 
+              className="profile-picture" 
+            />
+            <h1 className="username">{user.username}</h1>
+            {/* ... other user details ... */}
+            <div className="button-group">
+              <button className="btn edit-profile-btn" onClick={handleEditProfile}>Edit Profile</button>
+              <button className="btn watchlist-btn" onClick={goToWatchlist}>View Watchlist</button>
+            </div>
           </div>
+        )}
 
-          <div className="user-activity">
-              <section className="user-ratings">
-                  <h2>Ratings</h2>
-                  {/* Map through user's ratings and display them */}
-                  {/* Placeholder content */}
-                  <p>No ratings available</p>
-              </section>
+        <div className="user-activity">
+          <section className="user-ratings">
+            <h2>Ratings</h2>
+            {user.ratings && user.ratings.length > 0 ? (
+              user.ratings.map(rating => (
+                <p key={rating.id}>{rating.movieTitle}: {rating.score}/5</p>
+              ))
+            ) : (
+              <p>No ratings available</p>
+            )}
+          </section>
 
-              <section className="user-top-picks">
-                  <h2>Top Picks</h2>
-                  {/* Map through user's top picks and display them */}
-                  {/* Placeholder content */}
-                  <p>No top picks available</p>
-              </section>
+          <section className="user-top-picks">
+            <h2>Top Picks</h2>
+            {user.topPicks && user.topPicks.length > 0 ? (
+              user.topPicks.map(pick => (
+                <p key={pick.id}>{pick.movieTitle}</p>
+              ))
+            ) : (
+              <p>No top picks available</p>
+            )}
+          </section>
 
-              <section className="user-reviews">
-                  <h2>Recent Reviews</h2>
-                  {/* Map through user's recent reviews and display them */}
-                  {/* Placeholder content */}
-                  <p>No recent reviews available</p>
-              </section>
+          <section className="user-reviews">
+            <h2>Recent Reviews</h2>
+            {user.reviews && user.reviews.length > 0 ? (
+              user.reviews.map(review => (
+                <p key={review.id}>{review.movieTitle}: {review.content}</p>
+              ))
+            ) : (
+              <p>No recent reviews available</p>
+            )}
+          </section>
           </div>
       </div>
-  </>
-);
+    </div>
+  );
 }
 
 export default UserProfilePage;
-

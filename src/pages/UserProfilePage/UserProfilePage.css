@@ -1,59 +1,65 @@
-.user-profile-container {
-  max-width: 800px;
-  margin: 20px auto;
+.user-profile-page {
+  background-color: white;
+  color: #333;
+  font-family: Arial, sans-serif;
   padding: 20px;
-  background-color: #f8f9fa; /* Light background for the container */
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.user-info {
-  text-align: center;
+.user-profile-container {
+  max-width: 800px;
+  margin: auto;
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.edit-form, .user-info, .user-activity {
+  margin-bottom: 20px;
+}
+
+.btn {
+  background-color: purple;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.btn:hover {
+  background-color: #5e005e;
 }
 
 .profile-picture {
   width: 150px;
   height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 20px;
-  border: 3px solid #007bff; /* Add a border color similar to the button */
+  border-radius: 75px;
+  margin-bottom: 10px;
 }
 
-.user-info h1 {
-  font-size: 1.5em; /* Larger font size for the name */
+.username {
   color: #333;
-  margin-bottom: 15px;
 }
 
-.user-info p {
-  font-size: 1em;
-  color: #555; /* Slightly darker font color for better readability */
-  margin: 5px 0;
+.button-group {
+  margin-top: 10px;
 }
 
-.edit-profile-btn {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s; /* Smooth transition for button hover */
-}
-
-.edit-profile-btn:hover {
-  background-color: #0056b3; /* Darker shade on hover */
+.edit-input {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
 }
 
 .user-activity section {
-  margin-top: 40px;
+  margin-bottom: 20px;
 }
 
 .user-activity h2 {
-  color: #444; /* Slightly darker color for headings */
-  margin-bottom: 20px;
-  border-bottom: 2px solid #007bff; /* Add a bottom border to headings */
-  padding-bottom: 10px;
-  display: inline-block; /* Align the border with text */
+  color: purple;
 }

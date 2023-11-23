@@ -12,6 +12,9 @@
   .header-logo {
     font-size: 24px;
     font-weight: bold;
+    text-decoration: none;
+    color: purple;
+    display: flex;
     /* IMDb uses their logo here, you might want to add your own */
   }
   
@@ -26,4 +29,13 @@
     color: #e5e5e5; /* Lighter grey on hover */
   }
   
-  
+  .user-avatar {
+    width: 30px; /* Adjust size as needed */
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .user-username {
+      vertical-align: middle;
+  }

@@ -1,20 +1,22 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 export const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null); // Initially, no user is logged in
-
+    
     // Simulate a user login
     const loginUser = () => {
-        setUser({
+        const userData = {
             name: 'John Doe',
             email: 'johndoe@example.com',
             picture: '/path/to/default/profile/picture.jpg', // Default profile picture
             watchlist: [] // Initial empty watchlist
-        });
+        };
+        console.log("Logging in user:", userData);
+        setUser(userData);
     };
-
+    
     // Simulate a user logout
     const logoutUser = () => {
         setUser(null);
@@ -37,6 +39,10 @@ export const UserProvider = ({ children }) => {
             watchlist: prevUser.watchlist.filter(movie => movie.id !== movieId)
         }));
     };
+
+    useEffect(() => {
+        loginUser(); // This will set the user data when the provider mounts
+    }, []);
 
     return (
         <UserContext.Provider value={{ user, loginUser, logoutUser, updateUserPicture, addToWatchlist, removeFromWatchlist }}>

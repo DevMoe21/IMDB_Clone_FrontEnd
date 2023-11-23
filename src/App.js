@@ -9,7 +9,7 @@ import SignUpPage from './pages/SignUpPage/SignUpPage.js';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import CastAndDirectorPage from './pages/CastPage/CastAndDirectorPage.js';
-import WatchlistPage from './pages/WhatchlistPage/Watchlist.js';
+import Watchlist from './pages/WhatchlistPage/Watchlist.js';
 
 function App() {
   return (
@@ -21,8 +21,8 @@ function App() {
           <Route path="/movie" element={<MovieDetailsPage />} />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/user-profile" component={UserProfilePage} />
-          <Route path="/watchlist" component={WatchlistPage} />
+          <Route path="/user-profile" element={<UserProfilePage/>} />
+          <Route path="/watchlist" element={<Watchlist />} />
           <Route path="/cast-and-director" element={<CastAndDirectorPage/>}/>
         </Routes>
         <Footer />

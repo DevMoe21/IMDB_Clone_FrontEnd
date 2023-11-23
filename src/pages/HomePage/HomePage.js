@@ -188,6 +188,7 @@ function TopBoxOffice({ topMovies, onMovieClick, onAddToWatchlist }) {
 
 function HomePage() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const navigate = useNavigate();
   const [recentlyAddedMovies, setRecentlyAddedMovies] = useState([]);
   const [featuredMovies, setFeaturedMovies] = useState([]);
@@ -240,9 +241,15 @@ function HomePage() {
     setSearchTerm(e.target.value);
   };
 
-  const filteredMovies = dummyMovies.filter(movie => 
-    movie.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+  };
+
+  const filteredMovies = dummyMovies.filter(movie => {
+    const matchTitle = movie.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchCategory = selectedCategory === 'All' || movie.category === selectedCategory;
+    return matchTitle && matchCategory;
+  });
 
   const handleMovieClick = (movieId) => {
     navigate(`/movie/${movieId}`);
@@ -252,13 +259,23 @@ function HomePage() {
     <div className="homepage">
       <div className="title-section">
         <h1>Welcome to the Endless Void of Movies</h1>
-        <input 
-          type="text" 
-          value={searchTerm} 
-          onChange={handleSearchChange} 
-          placeholder="Search for movies..."
-          className="search-input"
-        />
+        <div className="search-bar">
+          <input 
+            type="text" 
+            value={searchTerm} 
+            onChange={handleSearchChange} 
+            placeholder="Search for movies..."
+            className="search-input"
+          />
+          <select onChange={handleCategoryChange} className="category-select">
+            <option value="All">All Genres</option>
+            <option value="Action">Action</option>
+            <option value="Drama">Drama</option>
+            <option value="Comedy">Comedy</option>
+            <option value="Romance">Romance</option>
+            {/* Add more categories as needed */}
+          </select>
+        </div>
       </div>
       <MovieCarousel movies={filteredMovies} onMovieClick={handleMovieClick} /* other props */ />
       <FeaturedToday featuredMovies={featuredMovies} onMovieClick={handleMovieClick}/* other props */ />

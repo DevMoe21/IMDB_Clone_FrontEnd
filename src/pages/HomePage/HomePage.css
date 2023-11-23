@@ -253,6 +253,28 @@
   transform: translateY(2px); /* Slight move up */
 }
 
+.search-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-input, .category-select {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #C0A0D0;
+  background-color: #292929;
+  color: #FFF;
+}
+
+.search-input {
+  flex-grow: 1; /* Allows the search input to take up available space */
+}
+
+
+
 
 /* Responsive Design Adjustments */
 @media screen and (max-width: 768px) {

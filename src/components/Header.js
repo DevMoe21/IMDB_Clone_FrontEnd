@@ -2,9 +2,14 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../pages/UserContext.js'; // Adjust the path as necessary
 import './Header.css';
+import defaultProfilePic from './default-profile-picture.jpg'; // Make sure the path is correct
 
 function Header() {
     const { user } = useContext(UserContext);
+
+    const getProfilePicture = () => {
+        return user && user.profilePicture ? user.profilePicture : defaultProfilePic;
+    };
 
     return (
         <header className="header">
@@ -14,11 +19,10 @@ function Header() {
             <nav className="header-nav">
                 {user ? (
                     <>
-                        {/* <Link to="/user-profile" className="nav-link">Profile</Link> Link to UserProfilePage */}
-                        <Link to={`/user/${user.username}`} className="user-info">
+                        <Link to="/user-profile" className="nav-link">
                             <img
-                                src={user.profilePicture} // Replace with the actual source of the user's profile picture
-                                alt={`${user.username}'s profile`}
+                                src={getProfilePicture()}
+                                alt={`${user.username || 'User'}'s profile`}
                                 className="user-avatar"
                             />
                             <span className="user-username">{user.username}</span>
@@ -31,7 +35,6 @@ function Header() {
                     </>
                 )}
                 <Link to="/movie" className="nav-link">Movie Details</Link> {/* Mock link to a MovieDetailsPage */}
-                <Link to="/user-profile" className="nav-link">User Profile</Link> {/* Button for UserProfilePage */}
             </nav>
         </header>
     );

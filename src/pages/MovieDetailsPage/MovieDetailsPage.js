@@ -5,7 +5,11 @@ import mockMovieDetails from '../MockDataPage.js'    // Importing the mock data
 
 const MovieDetailsPage = () => {
     const { title, description, releaseDate, genre, director, cast, posters, trailers, reviews } = mockMovieDetails;
-
+    const handleSubmitReview = (event) => {
+        event.preventDefault();
+        // Logic to submit the review goes here
+    };
+    
     return (
         <div className="movie-details">
             <h1>{title} ({new Date(releaseDate).getFullYear()})</h1>
@@ -30,6 +34,19 @@ const MovieDetailsPage = () => {
             }}>
                 <button className="watchlist-button">View Cast and Director</button>
             </Link>
+            <div className="user-review-section">
+                <h2>Write a Review</h2>
+                <form onSubmit={handleSubmitReview}>
+                    <textarea className="review-textarea" placeholder="Your review..."></textarea>
+                    <div className="rating-section">
+                        <label htmlFor="rating">Rating: </label>
+                        <select name="rating" id="rating">
+                            {[1, 2, 3, 4, 5].map(number => <option key={number} value={number}>{number}</option>)}
+                        </select>
+                    </div>
+                    <button type="submit" className="submit-review-button">Submit Review</button>
+                </form>
+            </div>
             <div className="reviews">
                 <h2>Reviews</h2>
                 {reviews.map(review => (

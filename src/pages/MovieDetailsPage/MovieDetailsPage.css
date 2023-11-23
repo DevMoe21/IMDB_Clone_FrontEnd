@@ -35,7 +35,7 @@
 }
 
 .trailer video {
-    width: 100%;
+    width: 90%;
     height: 300px;
     border: none;
     margin-bottom: 20px;
@@ -56,8 +56,46 @@
 .reviews .review {
     background-color: #333; /* Dark grey background */
     padding: 10px;
+    width: 90%;
     margin-bottom: 10px;
     border-radius: 5px;
+}
+
+.user-review-section {
+    margin-top: 30px;
+}
+
+.user-review-section h2 {
+    color: #8a2be2; /* Purple for section heading */
+}
+
+.review-textarea {
+    width: 90%;
+    height: 100px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.rating-section {
+    margin-bottom: 20px;
+}
+
+.rating-section select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.submit-review-button {
+    background-color: #8a2be2; /* Purple button */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 20px;
 }
 
 /* Responsive Design */
