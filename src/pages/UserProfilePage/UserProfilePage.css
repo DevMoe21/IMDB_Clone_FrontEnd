@@ -35,25 +35,31 @@
 .profile-picture {
   width: 150px;
   height: 150px;
-  border-radius: 75px;
+  border-radius: 75px; /* Make it round */
+  object-fit: cover; /* Ensure the image covers the area */
   margin-bottom: 10px;
 }
 
+
 .username {
   color: #333;
+  margin-top: 0; /* Adjust as needed */
 }
 
-.button-group {
-  margin-top: 10px;
-}
 
-.edit-input {
+.edit-profile-picture input,
+.edit-username input,
+.edit-gender input {
   display: block;
-  width: 100%;
+  width: 100%; /* Full width */
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
   border: 1px solid #ddd;
+}
+
+.button-group {
+  margin-top: 10px;
 }
 
 .user-activity section {

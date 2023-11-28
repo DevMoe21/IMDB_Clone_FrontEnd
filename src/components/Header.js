@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { UserContext } from '../pages/UserContext.js'; // Adjust the path as necessary
 import './Header.css';
 import defaultProfilePic from './default-profile-picture.jpg'; // Make sure the path is correct
+import FilmHubLogo from './FilmHubLogo.png'; // Update with the correct path
 
 function Header() {
     const { user } = useContext(UserContext);
@@ -14,7 +15,9 @@ function Header() {
     return (
         <header className="header">
             <div className="header-logo">
-                <Link to="/">FilmHub</Link>
+            <Link to="/">
+                <img src={FilmHubLogo} alt="FilmHub" />
+            </Link>
             </div>
             <nav className="header-nav">
                 {user ? (
