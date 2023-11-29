@@ -31,42 +31,64 @@ const dummyMovies = [
 ];
 
 // MovieCarousel Component
-function MovieCarousel({ movies, onMovieClick, onAddToWatchlist }) {
-  // Initialize selectedMovieId with the ID of the first movie in the array
-  const [selectedMovieId, setSelectedMovieId] = useState(movies[0]?.id);
+
+function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
+  const [movies, setMovies] = useState([]);
+  const [selectedMovieId, setSelectedMovieId] = useState(null);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await fetch('/api/recentlyAddedMovies');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        setMovies(data);
+        setSelectedMovieId(data[0]?.id); // Set the first movie as selected
+      } catch (error) {
+        console.error('Error fetching movies:', error);
+        // Handle error or show a message to the user
+      }
+    };
+
+    fetchMovies();
+  }, []); // Empty dependency array means this runs once after the component mounts
 
   const slideToMovie = (offset) => {
     const carousel = document.querySelector('.carousel-track');
     const currentLeft = carousel.scrollLeft;
     carousel.scrollTo({ left: currentLeft + offset, behavior: 'smooth' });
   };
-  
+
   const selectMovie = (movieId) => {
-    // If the selected movie is clicked again, do nothing
     if (movieId === selectedMovieId) return;
-    // Otherwise, update the selectedMovieId, which will change the key prop on the iframe
     setSelectedMovieId(movieId);
   };
+
+  if (movies.length === 0) {
+    return <div>Loading movies...</div>; // You can customize this loading state
+  }
 
   return (
     <div className="movie-carousel">
       <h2 className="section-title">Recently Added Movies</h2>
       <div className="carousel-container">
         <div className="carousel-track">
-          {movies.map((movie, index) => (
-            <div key={movie.id} className="movie-slide" onClick={() => selectMovie(movie.id)}>
-              {selectedMovieId === movie.id && (
+          {movies.map((movie) => (
+            <div key={movie.tmdbId} className="movie-slide" onClick={() => selectMovie(movie.tmdbId)}>
+              {selectedMovieId === movie.tmdbId && (
                 <div className="trailer-container">
                   <iframe
-                    key={selectedMovieId} // Key prop added here to force remount on change
-                    src={`https://www.youtube.com/embed/${movie.youtubeId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0`}
+                    key={selectedMovieId}
+                    src={`https://www.youtube.com/embed/${movie.trailerUrl}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0`}
                     frameBorder="0"
                     allow="autoplay; encrypted-media"
                     allowFullScreen
                     className="movie-trailer"
                   ></iframe>
                   <div className="movie-overlay">
-                    <img src={movie.poster} alt={movie.title} className="movie-poster-overlay" />
+                    <img src={movie.posterImage} alt={movie.title} className="movie-poster-overlay" />
                     <div className="movie-description">{movie.description}</div>
                   </div>
                 </div>
@@ -82,9 +104,18 @@ function MovieCarousel({ movies, onMovieClick, onAddToWatchlist }) {
   );
 }
 
+
 //FeaturedToday Component
-function FeaturedToday({ featuredMovies, onMovieClick, onAddToWatchlist }) {
+function FeaturedToday({ onMovieClick, onAddToWatchlist }) {
+  const [featuredMovies, setFeaturedMovies] = useState([]);
   const scrollContainerRef = useRef(null);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/featuredToday') // Replace with your actual backend URL
+      .then(response => response.json())
+      .then(data => setFeaturedMovies(data))
+      .catch(error => console.error('Error:', error));
+  }, []); // Empty dependency array ensures this runs once when the component mounts
 
   const scrollLeft = () => {
     scrollContainerRef.current.scrollBy({
@@ -106,15 +137,15 @@ function FeaturedToday({ featuredMovies, onMovieClick, onAddToWatchlist }) {
       <button className="scroll-button left" onClick={scrollLeft}>&lt;</button>
       <div className="movie-grid" ref={scrollContainerRef}>
         {featuredMovies.map((movie) => (
-          <div key={movie.id} className="movie" onClick={() => onMovieClick(movie.id)}>
-            <img src={movie.smallPoster} alt={movie.title} />
+          <div key={movie.tmdbId} className="movie" onClick={() => onMovieClick(movie.tmdbId)}>
+            <img src={movie.posterImage} alt={movie.title} />
             <div className="movie-info">
               <h3>{movie.title}</h3>
               <p>Rating: {movie.rating}/10</p>
               <p>Review: {movie.review}</p>
               <button className="addToWatchlist" onClick={(e) => {
                 e.stopPropagation(); // Prevents the movie click event
-                onAddToWatchlist(movie.id);
+                onAddToWatchlist(movie.tmdbId);
               }}>Add to Watchlist</button>
             </div>
           </div>
@@ -124,6 +155,7 @@ function FeaturedToday({ featuredMovies, onMovieClick, onAddToWatchlist }) {
     </div>
   );
 }
+
 
 
 // ComingSoon Component
