@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../FireBase/AuthContext.js'; // Update this path as necessary
+import { useAuth } from '../../FireBase/AuthContext.js'; // Update path as necessary
 import './UserProfilePage.css';
 import defaultProfilePic from '../../components/default-profile-picture.jpg';
-
+import { getAuth, signOut } from 'firebase/auth'; // Import signOut
 
 function UserProfilePage() {
   const { currentUser, updateUser } = useAuth(); // Using Firebase Auth user
@@ -15,7 +15,24 @@ function UserProfilePage() {
    // Add other fields as needed
  });
 
+  const auth = getAuth();
   const navigate = useNavigate(); // Updated to use navigate
+
+  const formatDate = (dateString) => {
+    let date;
+    if (dateString?.toDate) { // Check if it's a Firebase Timestamp
+      date = dateString.toDate();
+    } else if (typeof dateString === 'string' || dateString instanceof String) {
+      date = new Date(dateString); // Parse date string
+    }
+  
+    if (!isNaN(date)) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return date.toLocaleDateString(undefined, options);
+    } else {
+      return 'Unknown'; // Or any default text
+    }
+  };
 
   if (!currentUser) {
     return <div>Loading user data...</div>;
@@ -40,6 +57,20 @@ function UserProfilePage() {
       ...editFormData,
       [event.target.name]: event.target.value,
     });
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/signin'); // Redirect to sign-in page after logout
+    } catch (error) {
+      console.error('Logout Error:', error);
+    }
+  };
+
+  const handleChangeProfilePicture = () => {
+
+
   };
 
   return (
@@ -95,10 +126,13 @@ function UserProfilePage() {
               src={currentUser.profilePicture || defaultProfilePic}
               alt="Profile"
               className="profile-picture"
+              onClick={handleChangeProfilePicture}
             />
-            <h1 className="username">{currentUser.username}</h1>
+            <h1 className="username">{currentUser.username || 'Anonymous'}</h1>
             <p className="gender">{currentUser.gender}</p>
-            {/* Display other user details */}
+            <p className="dob">Date of Birth: {currentUser.dob}</p>
+            <p className="country">Country: {currentUser.country}</p>
+            <p className="join-date">Joined: {formatDate(currentUser.joinDate)}</p>
             <div className="button-group">
               <button className="btn edit-profile-btn" onClick={handleEditProfile}>
                 Edit Profile
@@ -145,6 +179,9 @@ function UserProfilePage() {
               <p>No recent reviews available</p>
             )}
           </section>
+          <button className="btn logout-btn" onClick={handleLogout}>
+                Logout
+              </button>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 .homepage {
   font-family: 'Arial', sans-serif;
-  background-color: #1a1a1a; /* Dark background */
+  background-color: #242424;
   color: #FFF; /* White text color */
   margin: 0; /* Remove margin */
   padding: 20px;
@@ -18,7 +18,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1; /* Layering the trailer below the info */
+  z-index: 2; /* Layering the trailer below the info */
 }
 
 .movie-trailer {
@@ -29,22 +29,26 @@
 /* Position the poster at the bottom left */
 .movie-poster-overlay {
   position: absolute;
-  bottom: 20px; /* Spacing from bottom */
-  left: 20px; /* Spacing from left */
-  max-width: 120px; /* Adjust size as needed */
-  max-height: 200px;
-  z-index: 2; /* Ensure the poster is above the trailer */
+  bottom: 10px; /* Spacing from bottom */
+  left: 10px; /* Spacing from left */
+  max-width: 150px; /* Adjust size as needed */
+  max-height: 225px;
+  z-index: 3; /* Ensure the poster is above the trailer */
 }
 
 /* Position the description to the right of the poster */
 .movie-description {
   position: absolute;
-  bottom: 60px; /* Align with the bottom of the poster */
-  left: 150px; /* Adjust this value so it's to the right of the poster */
+  bottom: 10px; /* Align with the bottom of the poster */
+  left: 170px; /* Adjust this value to prevent overlapping with the poster */
   color: #FFF;
   font-size: 1em;
-  max-width: 600px; /* Adjust width based on the left position */
-  z-index: 2; /* Ensure the description is above the trailer */
+  max-width: 400px; /* Adjust width as needed */
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background for readability */
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Soft shadow for depth */
+  z-index: 2;
 }
 
 .movie-info-overlay {
@@ -257,15 +261,22 @@
 }
 
 .movie-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Distributes space between items */
+  height: 120px; /* Adjust height as needed */
   padding: 10px;
 }
-
 
 .movie h3 {
   font-size: 1em;
   color: #FFF;
   margin: 10px 0 5px 0;
+  height: 3em; /* Fixed height */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add ellipsis to overflowing text */
 }
+
 
 .movie:hover {
   box-shadow: 0 8px 16px rgba(255, 255, 255, 0.3);
@@ -273,10 +284,13 @@
 }
 
 .movie p {
-  color: #DDD; /* Lighter text color for ratings and reviews */
-  font-size: 0.8em; /* Reduce font size for a more balanced look */
-  margin-top: 2px; /* Reduce spacing to compact the layout */
+  color: #DDD;
+  font-size: 0.8em;
+  margin-top: 2px;
+  height: 2em; /* Fixed height */
+  overflow: hidden; /* Hide overflow */
 }
+
 .featured-today h2, .coming-soon h2, .top-box-office h2 {
   color: #C0A0D0; 
 }
@@ -343,14 +357,14 @@
     font-size: 0.7em; /* Smaller text on smaller screens */
   }
   
-  .movie-description, .movie-poster-overlay {
-    max-width: 100px; /* Smaller size for smaller screens */
-    left: 10px; /* Adjust left position */
-  }
-
   .movie-description {
     left: 120px; /* Adjust according to the new poster size */
-    max-width: calc(100% - 140px); /* Adjust the width calculation */
+    max-width: calc(100% - 140px); /* Adjust width to fit the screen */
+  }
+
+  .movie-poster-overlay {
+    max-width: 100px; /* Adjust the poster size on smaller screens */
+    left: 10px; /* Adjust left position */
   }
 
   .movie-carousel h2 {
@@ -362,6 +376,12 @@
   }
   .scroll-button {
     display: none;
+  }
+  
+  .movie-poster-overlay {
+    max-width: 100px; /* Smaller size for smaller screens */
+    left: 5px; /* Adjust left position */
+    max-height: 150px; /* Adjust height */
   }
 }
 

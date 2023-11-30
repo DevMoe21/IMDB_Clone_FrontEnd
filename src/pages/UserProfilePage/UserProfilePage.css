@@ -12,6 +12,9 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
 }
 
 .edit-form, .user-info, .user-activity {
@@ -41,9 +44,11 @@
 }
 
 
-.username {
+.username, .gender{
   color: #333;
   margin-top: 0; /* Adjust as needed */
+  font-size: 1.2em; /* Larger font size for visibility */
+  margin: 5px 0;
 }
 
 
@@ -60,6 +65,25 @@
 
 .button-group {
   margin-top: 10px;
+  display: flex;
+  justify-content: center; /* Center buttons */
+  flex-wrap: wrap; 
+}
+
+.user-info {
+  text-align: center; /* Center align user info */
+}
+
+.logout-btn {
+  background-color: #d9534f; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  background-color: #c9302c; /* Darker red on hover */
+}
+
+.user-activity {
+  width: 100%; /* Full width for sections */
 }
 
 .user-activity section {
@@ -68,4 +92,18 @@
 
 .user-activity h2 {
   color: purple;
+  text-align: left; /* Align section headers to the left */
+}
+
+.join-date {
+  color: #555; /* Example color */
+  margin: 10px 0; /* Spacing */
+  font-style: italic; /* Styling */
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .user-profile-container {
+    padding: 10px;
+  }
 }

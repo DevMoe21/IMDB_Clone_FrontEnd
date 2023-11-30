@@ -8,29 +8,49 @@ import AddToWatchlist from '../WhatchlistPage/AddToWatchlist';
 
 // MovieCarousel Component
 function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
-  const [movies, setMovies] = useState([]); // Initialize movies as an empty array
+  const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMovieId, setSelectedMovieId] = useState(null);
+  const [autoRotateIndex, setAutoRotateIndex] = useState(0);
 
   useEffect(() => {
-    const fetchMoviesData = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/recentlyAddMoives'); //http://localhost:5000/api/recentlyAddMoives
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const responseText = await response.text();
-        console.log('Response Text:', responseText); // Log the raw response text
-        const moviesData = JSON.parse(responseText);
-        console.log('Movies Data:', moviesData); // Log the parsed data
-        setMovies(moviesData); // Update the state with the fetched movies
-        console.log('Movies:', movies); // Log the updated state variable
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Fetch Error:', error);
+    const rotateMovies = () => {
+      if (movies.length > 0) {
+        const nextIndex = (autoRotateIndex + 1) % movies.length;
+        setSelectedMovieId(movies[nextIndex].tmdbId);
+        setAutoRotateIndex(nextIndex);
       }
     };
 
+    const intervalId = setInterval(rotateMovies, 10000); // Rotate every 10 seconds
+
+    return () => clearInterval(intervalId); // Clear interval on component unmount
+  }, [movies, autoRotateIndex]);
+  
+  const isValidYoutubeVideoId = (videoId) => {
+    // Check if the videoId is in a valid format (11 characters)
+    return /^[a-zA-Z0-9_-]{11}$/.test(videoId);
+  };
+
+
+  // Function to fetch movies
+  const fetchMoviesData = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/recentlyAddMoives');
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const responseText = await response.text();
+      const moviesData = JSON.parse(responseText);
+      setMovies(moviesData);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Fetch Error:', error);
+    }
+  };
+
+  // Effect for fetching movies
+  useEffect(() => {
     fetchMoviesData();
   }, []);
 
@@ -64,7 +84,7 @@ function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
                 <div className="trailer-container">
                   <iframe
                     key={selectedMovieId}
-                    src={`https://www.youtube.com/embed/${movie.trailerUrl}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0`}
+                    src={`https://www.youtube.com/embed/${movie.trailerUrl}`}
                     frameBorder="0"
                     allow="autoplay; encrypted-media"
                     allowFullScreen
@@ -135,7 +155,6 @@ function FeaturedToday({ onMovieClick, onAddToWatchlist }) {
             <div className="movie-info">
               <h3>{movie.title}</h3>
               <p>Rating: {movie.rating}/10</p>
-              <p>Review: {movie.review}</p>
               <button className="addToWatchlist" onClick={(e) => {
                 e.stopPropagation(); // Prevents the movie click event
                 onAddToWatchlist(movie.tmdbId);
@@ -197,7 +216,6 @@ function ComingSoon({ onMovieClick, onAddToWatchlist }) {
             <div className="movie-info">
               <h3>{movie.title}</h3>
               <p>Rating: {movie.rating}/10</p>
-              <p>Review: {movie.review}</p>
               <button className="addToWatchlist" onClick={(e) => {
                 e.stopPropagation();
                 onAddToWatchlist(movie.id);
@@ -259,7 +277,6 @@ function TopBoxOffice({ onMovieClick, onAddToWatchlist }) {
             <div className="movie-info">
               <h3>{movie.title}</h3>
               <p>Rating: {movie.rating}/10</p>
-              <p>Review: {movie.review}</p>
               <button className="addToWatchlist" onClick={(e) => {
                 e.stopPropagation(); // Prevents the movie click event
                 onAddToWatchlist(movie.id);

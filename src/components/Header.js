@@ -42,7 +42,6 @@ function Header() {
                             />
                             <span className="user-username">{currentUser.username}</span>
                         </Link>
-                        <button onClick={handleLogout} className="nav-link">Logout</button>
                     </>
                 ) : (
                     <>
