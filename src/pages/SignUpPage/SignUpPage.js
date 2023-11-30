@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import './SignUpPage.css'; // Ensure this CSS file is correctly referenced
 import { auth } from '../../FireBase/firebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { database } from '../../FireBase/firebaseConfig';
+import { ref, set } from 'firebase/database';
+import { useNavigate } from 'react-router-dom';
+
 
 function SignUpPage() {
   const [email, setEmail] = useState('');
@@ -10,22 +14,30 @@ function SignUpPage() {
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [gender, setGender] = useState('');
 
-  const signUpWithEmail = (e) => {
-    e.preventDefault();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Handle successful account creation here
-        // You may want to save the additional user information (username, dateOfBirth, gender) to your database
-      })
-      .catch((error) => {
-        // Handle errors here
-      });
-  };
+  const navigate = useNavigate(); // import useNavigate from 'react-router-dom'
+
+  createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Store additional user data in Realtime Database
+    const userId = userCredential.user.uid;
+    set(ref(database, 'users/' + userId), {
+      username: username,
+      dateOfBirth: dateOfBirth,
+      gender: gender
+    }).then(() => {
+      navigate('/dashboard'); // Redirect to dashboard or home page after successful sign-up
+    });
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  });
+
 
   return (
     <div className="signup-container">
       <h2>Sign Up</h2>
-      <form className="signup-form" onSubmit={signUpWithEmail}>
+      <form className="signup-form" onSubmit={createUserWithEmailAndPassword}>
         <input 
           type="text" 
           value={username} 

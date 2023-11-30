@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import './SignInPage.css'; // Ensure this CSS file is correctly referenced
+import './SignInPage.css';
 import { auth, googleProvider, facebookProvider } from '../../FireBase/firebaseConfig';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'; // Import signInWithPopup
 import googleIcon from '../icons8-google-30.png';
 import facebookIcon from '../icons8-facebook-50.png';
+import { useNavigate } from 'react-router-dom';
 
 
 function SignInPage() {
@@ -11,33 +12,37 @@ function SignInPage() {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
   const signInWithEmail = (e) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Handle successful sign-in here
+        navigate('/dashboard'); // Redirect to dashboard or home page after successful login
       })
       .catch((error) => {
-        // Update to display error messages
         setErrorMessage(error.message);
       });
   };
 
   const signInWithGoogle = () => {
-    auth.signInWithPopup(googleProvider).then((result) => {
-      // Handle successful sign-in
-    }).catch((error) => {
-      // Handle errors
-    });
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        navigate('/dashboard'); // Redirect after successful Google sign-in
+      })
+      .catch((error) => {
+        setErrorMessage(error.message);
+      });
   };
 
   const signInWithFacebook = () => {
-    auth.signInWithPopup(facebookProvider).then((result) => {
-      // Handle successful sign-in
-    }).catch((error) => {
-      // Handle errors
-    });
+    signInWithPopup(auth, facebookProvider)
+      .then((result) => {
+        navigate('/dashboard'); // Redirect after successful Facebook sign-in
+      })
+      .catch((error) => {
+        setErrorMessage(error.message);
+      });
   };
 
   return (
