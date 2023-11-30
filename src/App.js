@@ -10,7 +10,6 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import CastAndDirectorPage from './pages/CastPage/CastAndDirectorPage.js';
 import Watchlist from './pages/WhatchlistPage/Watchlist.js';
-
 function App() {
   return (
     <UserProvider> {/* Wrap your components with UserProvider */}
@@ -18,7 +17,7 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/movie" element={<MovieDetailsPage />} />
+          <Route path="/movie/:id" element={<MovieDetailsPage />} />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/user-profile" element={<UserProfilePage/>} />
