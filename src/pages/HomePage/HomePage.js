@@ -79,8 +79,8 @@ function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
       <div className="carousel-container">
         <div className="carousel-track">
           {movies.map((movie) => (
-            <div key={movie.tmdbId} className="movie-slide" onClick={() => selectMovie(movie.tmdbId)}>
-              {selectedMovieId === movie.tmdbId && (
+            <div key={movie._id} className="movie-slide" onClick={() => selectMovie(movie._id)}>
+              {selectedMovieId === movie._id && (
                 <div className="trailer-container">
                   <iframe
                     key={selectedMovieId}
@@ -150,14 +150,14 @@ function FeaturedToday({ onMovieClick, onAddToWatchlist }) {
       <button className="scroll-button left" onClick={scrollLeft}>&lt;</button>
       <div className="movie-grid" ref={scrollContainerRef}>
         {featuredMovies.map((movie) => (
-          <div key={movie.tmdbId} className="movie" onClick={() => onMovieClick(movie.tmdbId)}>
+          <div key={movie._id} className="movie" onClick={() => onMovieClick(movie._id)}>
             <img src={movie.posterImage} alt={movie.title} />
             <div className="movie-info">
               <h3>{movie.title}</h3>
               <p>Rating: {movie.rating}/10</p>
               <button className="addToWatchlist" onClick={(e) => {
                 e.stopPropagation(); // Prevents the movie click event
-                onAddToWatchlist(movie.tmdbId);
+                onAddToWatchlist(movie._id);
               }}>Add to Watchlist</button>
             </div>
           </div>
@@ -211,14 +211,14 @@ function ComingSoon({ onMovieClick, onAddToWatchlist }) {
       <button className="scroll-button left" onClick={scrollLeft}>&lt;</button>
       <div className="movie-grid" ref={scrollContainerRef}>
         {comingSoonMovies.map((movie) => (
-          <div key={movie.tmdbId} className="movie" onClick={() => onMovieClick(movie.tmdbId)}>
+          <div key={movie._id} className="movie" onClick={() => onMovieClick(movie._id)}>
             <img src={movie.posterImage} alt={movie.name} />
             <div className="movie-info">
               <h3>{movie.title}</h3>
               <p>Rating: {movie.rating}/10</p>
               <button className="addToWatchlist" onClick={(e) => {
                 e.stopPropagation();
-                onAddToWatchlist(movie.id);
+                onAddToWatchlist(movie._id);
               }}>Add to Watchlist</button>
             </div>
           </div>
@@ -272,14 +272,14 @@ function TopBoxOffice({ onMovieClick, onAddToWatchlist }) {
       <button className="scroll-button left" onClick={scrollLeft}>&lt;</button>
       <div className="movie-grid" ref={scrollContainerRef}>
         {topMovies.map((movie) => (
-          <div key={movie.tmdbId} className="movie" onClick={() => onMovieClick(movie.tmdbId)}>
+          <div key={movie._id} className="movie" onClick={() => onMovieClick(movie._id)}>
             <img src={movie.posterImage} alt={movie.name} />
             <div className="movie-info">
               <h3>{movie.title}</h3>
               <p>Rating: {movie.rating}/10</p>
               <button className="addToWatchlist" onClick={(e) => {
                 e.stopPropagation(); // Prevents the movie click event
-                onAddToWatchlist(movie.id);
+                onAddToWatchlist(movie._id);
               }}>Add to Watchlist</button>
             </div>
           </div>
