@@ -5,55 +5,39 @@ import { useRef} from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './HomePage.css';
-
-const dummyMovies = [
-  {
-    id: 1,
-    title: "Movie 1",
-    poster: "https://via.placeholder.com/150",
-    smallPoster: "https://via.placeholder.com/100",
-    rating: 8.5,
-    review: "Great movie!",
-    youtubeId: "s_76M4c4LTo", // YouTube Video ID
-    description: "This is a description for Movie 1 it talks aboiut the movie and how it is a great movie. It is a great movie.This is a description for Movie 1 it talks aboiut the movie and how it is a great movie. It is a great movie.This is a description for Movie 1 it talks aboiut the movie and how it is a great movie. It is a great movie.This is a description for Movie 1 it talks aboiut the movie and how it is a great movie. It is a great movie. "
-  }
-  ,
-  {id: 2,
-    title: "Movie 2",
-    poster: "https://via.placeholder.com/150",
-    smallPoster: "https://via.placeholder.com/100",
-    rating: 8.5,
-    review: "Great movie!",
-    youtubeId: "s_76M4c4LTo", // YouTube Video ID
-    description: "This is a description for Movie 2."
-   }
-  
-];
+import AddToWatchlist from '../WhatchlistPage/AddToWatchlist';
 
 // MovieCarousel Component
-
 function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState([]); // Initialize movies as an empty array
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedMovieId, setSelectedMovieId] = useState(null);
 
   useEffect(() => {
-    const fetchMovies = async () => {
+    const fetchMoviesData = async () => {
       try {
-        const response = await fetch('/api/recentlyAddedMovies');
+        const response = await fetch('http://localhost:5000/api/recentlyAddMoives'); //http://localhost:5000/api/recentlyAddMoives
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        const data = await response.json();
-        setMovies(data);
-        setSelectedMovieId(data[0]?.id); // Set the first movie as selected
+        const responseText = await response.text();
+        console.log('Response Text:', responseText); // Log the raw response text
+        const moviesData = JSON.parse(responseText);
+        console.log('Movies Data:', moviesData); // Log the parsed data
+        setMovies(moviesData); // Update the state with the fetched movies
+        console.log('Movies:', movies); // Log the updated state variable
+        setIsLoading(false);
       } catch (error) {
-        console.error('Error fetching movies:', error);
-        // Handle error or show a message to the user
+        console.error('Fetch Error:', error);
       }
     };
 
-    fetchMovies();
-  }, []); // Empty dependency array means this runs once after the component mounts
+    fetchMoviesData();
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading movies...</div>;
+  }
 
   const slideToMovie = (offset) => {
     const carousel = document.querySelector('.carousel-track');
@@ -67,7 +51,7 @@ function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
   };
 
   if (movies.length === 0) {
-    return <div>Loading movies...</div>; // You can customize this loading state
+    return <div>Loading movies...</div>;
   }
 
   return (
@@ -93,7 +77,7 @@ function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
                   </div>
                 </div>
               )}
-              <img src={movie.poster} alt={movie.title} className="movie-poster" />
+              <img src={movie.posterImage} alt={movie.title} className="movie-poster" />
             </div>
           ))}
         </div>
@@ -104,19 +88,29 @@ function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
   );
 }
 
-
-//FeaturedToday Component
 function FeaturedToday({ onMovieClick, onAddToWatchlist }) {
   const [featuredMovies, setFeaturedMovies] = useState([]);
   const scrollContainerRef = useRef(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/featuredToday') // Replace with your actual backend URL
-      .then(response => response.json())
-      .then(data => setFeaturedMovies(data))
-      .catch(error => console.error('Error:', error));
-  }, []); // Empty dependency array ensures this runs once when the component mounts
+    // Fetch data for FeaturedToday
+    const fetchFeaturedTodayData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/featuredToday');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        setFeaturedMovies(data);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
 
+    fetchFeaturedTodayData();
+  }, []);
+
+  // Rest of the FeaturedToday component remains the same
   const scrollLeft = () => {
     scrollContainerRef.current.scrollBy({
       left: -200, // Or the width of a movie element
@@ -156,42 +150,60 @@ function FeaturedToday({ onMovieClick, onAddToWatchlist }) {
   );
 }
 
-
-
-// ComingSoon Component
-function ComingSoon({ comingSoonMovies, onMovieClick, onAddToWatchlist }) {
+function ComingSoon({ onMovieClick, onAddToWatchlist }) {
+  const [comingSoonMovies, setComingSoonMovies] = useState([]);
   const scrollContainerRef = useRef(null);
 
+  useEffect(() => {
+    // Fetch data for ComingSoon
+    const fetchComingSoonData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/comingSoon');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        setComingSoonMovies(data);
+      } catch (error) {
+        console.error('Failed to fetch coming soon movies:', error);
+      }
+    };
+
+    fetchComingSoonData();
+  }, []);
+
+  // Rest of the ComingSoon component remains the same
   const scrollLeft = () => {
     scrollContainerRef.current.scrollBy({
-      left: -200, // Or the width of a movie element
+      left: -200,
       behavior: 'smooth'
     });
   };
 
   const scrollRight = () => {
     scrollContainerRef.current.scrollBy({
-      left: 200, // Or the width of a movie element
+      left: 200,
       behavior: 'smooth'
     });
   };
+
   return (
     <div className="coming-soon">
       <h2>Coming Soon</h2>
       <button className="scroll-button left" onClick={scrollLeft}>&lt;</button>
       <div className="movie-grid" ref={scrollContainerRef}>
         {comingSoonMovies.map((movie) => (
-          <div key={movie.id} className="movie" onClick={() => onMovieClick(movie.id)}>
-            <img src={movie.smallPoster} alt={movie.name} />
+          <div key={movie.tmdbId} className="movie" onClick={() => onMovieClick(movie.tmdbId)}>
+            <img src={movie.posterImage} alt={movie.name} />
             <div className="movie-info">
               <h3>{movie.title}</h3>
               <p>Rating: {movie.rating}/10</p>
               <p>Review: {movie.review}</p>
               <button className="addToWatchlist" onClick={(e) => {
-                e.stopPropagation(); // Prevents the movie click event
+                e.stopPropagation();
                 onAddToWatchlist(movie.id);
               }}>Add to Watchlist</button>
-              </div>
+            </div>
           </div>
         ))}
       </div>
@@ -200,21 +212,39 @@ function ComingSoon({ comingSoonMovies, onMovieClick, onAddToWatchlist }) {
   );
 }
 
-
-// TopBoxOffice Component
-function TopBoxOffice({ topMovies, onMovieClick, onAddToWatchlist }) {
+function TopBoxOffice({ onMovieClick, onAddToWatchlist }) {
+  const [topMovies, setTopMovies] = useState([]);
   const scrollContainerRef = useRef(null);
 
+  useEffect(() => {
+    // Fetch data for TopBoxOffice
+    const fetchTopBoxOfficeData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/boxOffice');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        setTopMovies(data);
+      } catch (error) {
+        console.error('Failed to fetch top box office movies:', error);
+      }
+    };
+
+    fetchTopBoxOfficeData();
+  }, []);
+
+  // Rest of the TopBoxOffice component remains the same
   const scrollLeft = () => {
     scrollContainerRef.current.scrollBy({
-      left: -200, // Or the width of a movie element
+      left: -200,
       behavior: 'smooth'
     });
   };
 
   const scrollRight = () => {
     scrollContainerRef.current.scrollBy({
-      left: 200, // Or the width of a movie element
+      left: 200,
       behavior: 'smooth'
     });
   };
@@ -225,8 +255,8 @@ function TopBoxOffice({ topMovies, onMovieClick, onAddToWatchlist }) {
       <button className="scroll-button left" onClick={scrollLeft}>&lt;</button>
       <div className="movie-grid" ref={scrollContainerRef}>
         {topMovies.map((movie) => (
-          <div key={movie.id} className="movie" onClick={() => onMovieClick(movie.id)}>
-            <img src={movie.smallPoster} alt={movie.name} />
+          <div key={movie.tmdbId} className="movie" onClick={() => onMovieClick(movie.tmdbId)}>
+            <img src={movie.posterImage} alt={movie.name} />
             <div className="movie-info">
               <h3>{movie.title}</h3>
               <p>Rating: {movie.rating}/10</p>
@@ -235,7 +265,7 @@ function TopBoxOffice({ topMovies, onMovieClick, onAddToWatchlist }) {
                 e.stopPropagation(); // Prevents the movie click event
                 onAddToWatchlist(movie.id);
               }}>Add to Watchlist</button>
-              </div>
+            </div>
           </div>
         ))}
       </div>
@@ -248,32 +278,31 @@ function HomePage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const navigate = useNavigate();
-  const [recentlyAddedMovies, setRecentlyAddedMovies] = useState([]);
-  const [featuredMovies, setFeaturedMovies] = useState([]);
+  const [allMovies, setAllMovies] = useState([]);
   const [comingSoonMovies, setComingSoonMovies] = useState([]);
   const [topBoxOfficeMovies, setTopBoxOfficeMovies] = useState([]);
+  const [featuredMovies, setFeaturedMovies] = useState([]);
 
+  // Fetch data for allMovies
   useEffect(() => {
-    // Fetch recently added movies
-    const fetchRecentlyAddedMovies = async () => {
+    const fetchAllMoviesData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/movies');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Fetched movies:', data);
+        // You can process data here
+      } catch (error) {
+        console.error('Error fetching movies:', error);
+      }
     };
 
-    // Fetch featured today movies
-    const fetchFeaturedTodayMovies = async () => {
-    };
-
-    // Fetch coming soon movies
-    const fetchComingSoonMovies = async () => {
-      // Implement similar logic as above
-
-    };
-
-    // Fetch top box office movies
-    const fetchTopBoxOfficeMovies = async () => {
-      // Implement similar logic as above
-    };
+    fetchAllMoviesData();
   }, []);
 
+  // Rest of the HomePage component remains the same
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -282,11 +311,11 @@ function HomePage() {
     setSelectedCategory(e.target.value);
   };
 
-  const filteredMovies = dummyMovies.filter(movie => {
+  const filteredMovies = allMovies.filter(movie => {
     const matchTitle = movie.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchCategory = selectedCategory === 'All' || movie.category === selectedCategory;
+    const matchCategory = selectedCategory === 'All' || movie.genre === selectedCategory;
     return matchTitle && matchCategory;
-  });
+});
 
   const handleMovieClick = (movieId) => {
     navigate(`/movie/${movieId}`);
@@ -314,7 +343,7 @@ function HomePage() {
           </select>
         </div>
       </div>
-      <MovieCarousel movies={filteredMovies} onMovieClick={handleMovieClick} /* other props */ />
+      <MovieCarousel onMovieClick={handleMovieClick} onAddToWatchlist={AddToWatchlist} />
       <FeaturedToday featuredMovies={featuredMovies} onMovieClick={handleMovieClick}/* other props */ />
       <ComingSoon comingSoonMovies={comingSoonMovies} onMovieClick={handleMovieClick}/* other props */ />
       <TopBoxOffice topMovies={topBoxOfficeMovies} onMovieClick={handleMovieClick}/* other props */ />
