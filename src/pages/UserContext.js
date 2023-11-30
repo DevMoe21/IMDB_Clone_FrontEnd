@@ -40,10 +40,6 @@ export const UserProvider = ({ children }) => {
         }));
     };
 
-    useEffect(() => {
-        loginUser(); // This will set the user data when the provider mounts
-    }, []);
-
     return (
         <UserContext.Provider value={{ user, loginUser, logoutUser, updateUserPicture, addToWatchlist, removeFromWatchlist }}>
             {children}

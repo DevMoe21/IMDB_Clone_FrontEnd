@@ -1,16 +1,17 @@
-import React, { useContext } from 'react';
-import { UserContext } from '../UserContext';
+import React from 'react';
+import { useAuth } from '../../FireBase/AuthContext.js'; // Update this path as necessary
 import './WatchlistPage.css';
 import mockMovieDetails from '../MockDataPage.js';
 
-const Watchlist = () => {
-    const { user, removeFromWatchlist } = useContext(UserContext);
 
-    if (!user) return <div>Please log in</div>;
+const Watchlist = () => {
+    const { currentUser, removeFromWatchlist } = useAuth();
+
+    if (!currentUser) return <div>Please log in</div>;
 
     // Ensure moviesToDisplay is always an array
-    const moviesToDisplay = Array.isArray(user.watchlist) && user.watchlist.length > 0
-        ? user.watchlist
+    const moviesToDisplay = Array.isArray(currentUser.watchlist) && currentUser.watchlist.length > 0
+        ? currentUser.watchlist
         : [mockMovieDetails]; // Wrap mockMovieDetails in an array
 
     // Group movies by genre

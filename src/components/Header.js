@@ -4,12 +4,24 @@ import { UserContext } from '../pages/UserContext.js'; // Adjust the path as nec
 import './Header.css';
 import defaultProfilePic from './default-profile-picture.jpg'; // Make sure the path is correct
 import FilmHubLogo from './FilmHubLogo.png'; // Update with the correct path
+import { useAuth } from '../FireBase/AuthContext.js';
+import { getAuth, signOut } from 'firebase/auth';
 
 function Header() {
-    const { user } = useContext(UserContext);
+    const { currentUser } = useAuth();
+    const auth = getAuth();
+
+    const handleLogout = () => {
+        signOut(auth).then(() => {
+            // Sign-out successful.
+        }).catch((error) => {
+            // An error happened.
+            console.error('Logout Error:', error);
+        });
+    };
 
     const getProfilePicture = () => {
-        return user && user.profilePicture ? user.profilePicture : defaultProfilePic;
+        return currentUser && currentUser.profilePicture ? currentUser.profilePicture : defaultProfilePic;
     };
 
     return (
@@ -20,16 +32,17 @@ function Header() {
             </Link>
             </div>
             <nav className="header-nav">
-                {user ? (
+                {currentUser ? (
                     <>
                         <Link to="/user-profile" className="nav-link">
                             <img
                                 src={getProfilePicture()}
-                                alt={`${user.username || 'User'}'s profile`}
+                                alt={`${currentUser.username || 'User'}'s profile`}
                                 className="user-avatar"
                             />
-                            <span className="user-username">{user.username}</span>
+                            <span className="user-username">{currentUser.username}</span>
                         </Link>
+                        <button onClick={handleLogout} className="nav-link">Logout</button>
                     </>
                 ) : (
                     <>

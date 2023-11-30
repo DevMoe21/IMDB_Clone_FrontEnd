@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import MovieDetailsPage from './pages/MovieDetailsPage/MovieDetailsPage.js';
-import { UserProvider } from './pages/UserContext.js';
 import UserProfilePage from './pages/UserProfilePage/UserProfilePage.js';
 import HomePage from './pages/HomePage/HomePage.js';
 import SignInPage from './pages/SignInPage/SignInPage.js';
@@ -11,9 +10,11 @@ import Footer from './components/Footer';
 import CastAndDirectorPage from './pages/CastPage/CastAndDirectorPage.js';
 import Watchlist from './pages/WhatchlistPage/Watchlist.js';
 
+import { AuthProvider } from './FireBase/AuthContext.js'; // import AuthProvider from the file you created
+
 function App() {
   return (
-    <UserProvider> {/* Wrap your components with UserProvider */}
+    <AuthProvider> 
       <Router>
         <Header />
         <Routes>
@@ -27,8 +28,9 @@ function App() {
         </Routes>
         <Footer />
       </Router>
-    </UserProvider>
+    </AuthProvider>
   );
 }
 
 export default App;
+
