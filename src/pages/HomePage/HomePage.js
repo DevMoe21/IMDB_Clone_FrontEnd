@@ -87,16 +87,11 @@ function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
   );
 }
 
-<<<<<<< Updated upstream
-=======
-//FeaturedToday Component
->>>>>>> Stashed changes
 function FeaturedToday({ onMovieClick, onAddToWatchlist }) {
   const [featuredMovies, setFeaturedMovies] = useState([]);
   const scrollContainerRef = useRef(null);
 
   useEffect(() => {
-<<<<<<< Updated upstream
     // Fetch data for FeaturedToday
     const fetchFeaturedTodayData = async () => {
       try {
@@ -115,14 +110,6 @@ function FeaturedToday({ onMovieClick, onAddToWatchlist }) {
   }, []);
 
   // Rest of the FeaturedToday component remains the same
-=======
-    fetch('http://localhost:5000/api/featuredToday') // Replace with your actual backend URL
-      .then(response => response.json())
-      .then(data => setFeaturedMovies(data))
-      .catch(error => console.error('Error:', error));
-  }, []); // Empty dependency array ensures this runs once when the component mounts
-
->>>>>>> Stashed changes
   const scrollLeft = () => {
     scrollContainerRef.current.scrollBy({
       left: -200, // Or the width of a movie element
@@ -143,7 +130,6 @@ function FeaturedToday({ onMovieClick, onAddToWatchlist }) {
       <button className="scroll-button left" onClick={scrollLeft}>&lt;</button>
       <div className="movie-grid" ref={scrollContainerRef}>
         {featuredMovies.map((movie) => (
-<<<<<<< Updated upstream
           <div key={movie.tmdbId} className="movie" onClick={() => onMovieClick(movie.tmdbId)}>
             <img src={movie.posterImage} alt={movie.title} />
             <div className="movie-info">
@@ -270,10 +256,6 @@ function TopBoxOffice({ onMovieClick, onAddToWatchlist }) {
         {topMovies.map((movie) => (
           <div key={movie.tmdbId} className="movie" onClick={() => onMovieClick(movie.tmdbId)}>
             <img src={movie.posterImage} alt={movie.name} />
-=======
-          <div key={movie.id} className="movie" onClick={() => onMovieClick(movie.id)}>
-            <img src={movie.posterImage} alt={movie.title} />
->>>>>>> Stashed changes
             <div className="movie-info">
               <h3>{movie.title}</h3>
               <p>Rating: {movie.rating}/10</p>
