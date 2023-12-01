@@ -53,36 +53,43 @@ const MovieDetailsPage = () => {
 
         return { ...movieData, genres: genresData, director, actors: actorsData, writers: writersData };
     };
-
-    // Initial data fetch
+    const fetchReviewById = async (reviewId) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/reviews/${reviewId}`);
+            if (!response.ok) {
+                throw new Error('Error fetching review');
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Failed to fetch review:', error);
+            return null; // or handle the error as needed
+        }
+    };
+    
     useEffect(() => {
-        const fetchMovieDetails = async () => {
+        const fetchMovieAndReviews = async () => {
             try {
-                // Fetch movie details
                 const movieRes = await fetch(`http://localhost:5000/api/movies/${id}`);
                 if (!movieRes.ok) throw new Error('Failed to fetch movie details');
-                const movieData = await movieRes.json();
-
-                // Fetch reviews
-                const reviewsRes = await fetch(`http://localhost:5000/api/reviews/${id}`);
-                if (!reviewsRes.ok) throw new Error('Failed to fetch reviews');
-                const reviews = await reviewsRes.json();
-
-                // Combine movie data with reviews and update state
+                let movieData = await movieRes.json();
+    
+                movieData = await enrichMovieData(movieData);
+    
+                const reviewPromises = movieData.reviewIds ? movieData.reviewIds.map(fetchReviewById) : [];
+                const reviews = await Promise.all(reviewPromises);
+    
                 setMovie({ ...movieData, userReviews: reviews });
                 setLoading(false);
             } catch (error) {
                 console.error(error);
                 setError(error);
+                setLoading(false);
             }
         };
-
-        fetchMovieDetails()
-            .then(enrichedMovieData => {
-                setMovie(enrichedMovieData);
-                setLoading(false);
-            });
-    }, [id]);
+    
+        fetchMovieAndReviews();
+    }, [id]);    
+    
 
     // Handle user review form submission
     const handleReviewSubmit = async (e) => {
@@ -204,9 +211,9 @@ const MovieDetailsPage = () => {
                     {movie.userReviews && movie.userReviews.length > 0 ? (
                         movie.userReviews.map((review, index) => (
                             <div key={index} className="user-review">
-                                <p><strong>User:</strong> {review.username}</p>
+                                <p><strong>User:</strong> {review.user}</p>
                                 <p><strong>Rating:</strong> {review.rating}/5</p>
-                                <p><strong>Review:</strong> {review.comment}</p>
+                                <p><strong>Review:</strong> {review.cotent}</p>
                             </div>
                         ))
                     ) : (
