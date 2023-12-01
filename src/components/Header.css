@@ -1,46 +1,47 @@
 /* Header.css */
+/* Header Styles */
 .header {
-    background-color: #000; /* IMDb uses a black background */
-    color: #fff; /* White text */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,.5); /* Optional: adds a subtle shadow for depth */
-  }
-  
-  .header-logo {
-    font-size: 24px;
-    font-weight: bold;
-    text-decoration: none;
-    color: purple;
-    display: flex;
-    /* IMDb uses their logo here, you might want to add your own */
-  }
+  background-color: #000; /* IMDb uses a black background */
+  color: #fff; /* White text */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Optional: adds a subtle shadow for depth */
+}
 
-  .header-logo img {
-    max-width: 100px; /* Adjust the size as needed */
-    height: auto; /* Keeps the aspect ratio intact */
-  }
+.header-logo {
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+  color: purple;
+  display: flex;
+  /* IMDb uses their logo here, you might want to add your own */
+}
 
-  .header-nav .nav-link {
-    color: #fff; /* White links */
-    margin-right: 20px;
-    text-decoration: none; /* Removes underline from links */
-    transition: color 0.3s ease; /* Smooth transition for hover effect */
-  }
-  
-  .header-nav .nav-link:hover {
-    color: #e5e5e5; /* Lighter grey on hover */
-  }
-  
-  .user-avatar {
-    width: 30px; /* Adjust size as needed */
-    height: 30px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
+.header-logo img {
+  max-width: 100px; /* Adjust the size as needed */
+  height: auto; /* Keeps the aspect ratio intact */
+}
 
-  .user-username {
-      vertical-align: middle;
-  }
+.header-nav .nav-link {
+  color: #fff; /* White links */
+  margin-right: 20px;
+  text-decoration: none; /* Removes underline from links */
+  transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.header-nav .nav-link:hover {
+  color: #e5e5e5; /* Lighter grey on hover */
+}
+
+.user-avatar {
+  width: 30px; /* Adjust size as needed */
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-username {
+  vertical-align: middle;
+}

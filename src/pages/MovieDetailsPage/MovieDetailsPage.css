@@ -1,106 +1,167 @@
-/* Base Styles */
+/* Enhanced Styles for MovieDetailsPage */
+
 .movie-details {
-    color: white;
-    background-color: black;
+    color: #FFF; /* White text color */
+    background-color: #242424; /* Dark background for a cinematic feel */
     font-family: 'Arial', sans-serif;
     padding: 20px;
-    width: 100%;
-    margin: 0;
+    margin: 0 auto; /* Centered layout */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align content to the left */
+    text-align: left; /* Align text to the left */
 }
 
 .movie-details h1 {
-    color: #8a2be2; /* Purple for the main title */
-    margin-bottom: 10px;
+    color: #C0A0D0; /* Purple color for emphasis */
+    font-size: 2.5em; /* Larger font size */
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px #000; /* Text shadow for depth */
 }
 
 .movie-details p {
-    color: #ddd; /* Light grey for text */
-    margin-bottom: 10px;
+    color: #DDD; /* Light grey for text */
+    font-size: 1em; /* Standard font size */
+    line-height: 1.6; /* Increased line spacing */
+    margin-bottom: 15px;
 }
 
 .poster img {
     width: 100%;
-    border-radius: 10px;
+    max-width: 350px;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Stronger shadow for depth */
     margin-bottom: 20px;
 }
 
-.watchlist-button {
-    background-color: #8a2be2; /* Purple button */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    display: block;
-    margin-bottom: 20px;
-}
-
-.trailer video {
-    width: 90%;
-    height: 300px;
-    border: none;
-    margin-bottom: 20px;
-}
-
-.movie-info p {
-    margin-bottom: 5px;
-}
-
-.reviews {
+.trailer {
     margin-top: 20px;
-}
-
-.reviews h2 {
-    color: #8a2be2; /* Purple for section heading */
-}
-
-.reviews .review {
-    background-color: #333; /* Dark grey background */
+    width: 100%; /* Full width for a more immersive experience */
+    background-color: #000; /* Black background for trailer */
     padding: 10px;
-    width: 90%;
-    margin-bottom: 10px;
-    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Box shadow for depth */
+    border-radius: 8px; /* Rounded corners */
+}
+
+.movie-trailer {
+    width: 100%;
+    height: 500px; /* Larger height for better visibility */
+    border-radius: 8px; /* Rounded corners */
 }
 
 .user-review-section {
-    margin-top: 30px;
+    margin-top: 40px;
+    width: 80%;
+    background-color: #333; /* Dark grey background for reviews section */
+    padding: 15px;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Box shadow for depth */
 }
 
 .user-review-section h2 {
-    color: #8a2be2; /* Purple for section heading */
+    font-size: 1.5em;
+    color: #C0A0D0;
+    margin-bottom: 15px;
 }
 
-.review-textarea {
-    width: 90%;
-    height: 100px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+.user-review-section form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.user-review-section input,
+.user-review-section select,
+.user-review-section textarea {
     padding: 10px;
-    border: 1px solid #ddd;
+    border-radius: 4px;
+    border: 1px solid #C0A0D0;
+    background-color: #292929;
+    color: #FFF;
+    font-size: 1em;
 }
 
-.rating-section {
-    margin-bottom: 20px;
-}
-
-.rating-section select {
-    padding: 5px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-.submit-review-button {
-    background-color: #8a2be2; /* Purple button */
-    color: white;
-    padding: 10px 20px;
+.user-review-section button {
+    background-color: #C0A0D0;
+    padding: 12px 20px;
     border: none;
     cursor: pointer;
-    display: block;
-    margin-bottom: 20px;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    border-radius: 4px;
 }
 
-/* Responsive Design */
-@media (max-width: 600px) {
-    .trailer video {
-        height: 200px;
+.user-review-section button:hover {
+    background-color: #73006d;
+}
+
+.user-review {
+    background-color: #292929; /* Slightly lighter grey */
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+.detail-section {
+    margin-top: 10px;
+    padding: 8px;
+    background-color: #333; /* Dark background for each detail section */
+    border-radius: 6px; /* Rounded corners for a polished look */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+    color: #C0A0D0; /* Purple text for contrast */
+    font-size: 1em;
+    line-height: 1.5; /* Spacing between lines */
+}
+
+.detail-section strong {
+    color: #FFF; /* White color for labels */
+    margin-right: 5px; /* Spacing after label */
+}
+
+.detail-item {
+    display: block; /* Each detail on its own line */
+    margin-bottom: 5px; /* Spacing between items */
+}
+
+.cast-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Spacing between cast names */
+}
+
+.cast-name {
+    background-color: #292929; /* Slightly lighter background for cast names */
+    padding: 4px 8px;
+    border-radius: 4px; /* Rounded corners for cast names */
+    color: #FFF; /* White text for cast names */
+}
+
+
+@media (max-width: 768px) {
+    .movie-details {
+        padding: 15px;
+    }
+
+    .trailer, .user-review-section {
+        width: 100%;
+    }
+
+    .movie-trailer {
+        height: 300px; /* Adjusted height for medium screens */
+    }
+
+    .poster img {
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .movie-details h1 {
+        font-size: 2em;
+    }
+
+    .movie-trailer {
+        height: 250px; /* Adjusted height for small screens */
     }
 }

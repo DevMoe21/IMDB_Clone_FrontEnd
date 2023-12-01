@@ -35,12 +35,14 @@ function Header() {
                 {currentUser ? (
                     <>
                         <Link to="/user-profile" className="nav-link">
-                            <img
-                                src={getProfilePicture()}
-                                alt={`${currentUser.username || 'User'}'s profile`}
-                                className="user-avatar"
-                            />
-                            <span className="user-username">{currentUser.username}</span>
+                            <div className="user-info">
+                                <img
+                                    src={getProfilePicture()}
+                                    alt={`${currentUser.username || 'User'}'s profile`}
+                                    className="user-avatar"
+                                />
+                                <span className="user-username">{currentUser.username}</span>
+                            </div>
                         </Link>
                     </>
                 ) : (
@@ -49,11 +51,11 @@ function Header() {
                         <Link to="/signup" className="nav-link">Sign Up</Link>
                     </>
                 )}
-                <Link to="/movie" className="nav-link">Movie Details</Link> {/* Mock link to a MovieDetailsPage */}
             </nav>
         </header>
     );
 }
 
 export default Header;
+
 
