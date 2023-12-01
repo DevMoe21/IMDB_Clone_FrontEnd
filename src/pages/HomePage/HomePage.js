@@ -26,12 +26,6 @@ function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
 
     return () => clearInterval(intervalId); // Clear interval on component unmount
   }, [movies, autoRotateIndex]);
-  
-  const isValidYoutubeVideoId = (videoId) => {
-    // Check if the videoId is in a valid format (11 characters)
-    return /^[a-zA-Z0-9_-]{11}$/.test(videoId);
-  };
-
 
   // Function to fetch movies
   const fetchMoviesData = async () => {
