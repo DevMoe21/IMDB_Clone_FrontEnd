@@ -77,7 +77,6 @@ function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
     <div className="movie-carousel">
       <h2 className="section-title">Recently Added Movies</h2>
       <div className="carousel-container">
-        <div className="carousel-track">
           {movies.map((movie) => (
             <div key={movie._id} className="movie-slide" onClick={() => selectMovie(movie._id)}>
               {selectedMovieId === movie._id && (
