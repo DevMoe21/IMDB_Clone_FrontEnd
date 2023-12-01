@@ -58,14 +58,21 @@ const MovieDetailsPage = () => {
     useEffect(() => {
         const fetchMovieDetails = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/api/movies/${id}`);
-                if (!response.ok) {
-                    throw new Error('Error fetching movie');
-                }
-                const movieData = await response.json();
-                return enrichMovieData(movieData);
+                // Fetch movie details
+                const movieRes = await fetch(`http://localhost:5000/api/movies/${id}`);
+                if (!movieRes.ok) throw new Error('Failed to fetch movie details');
+                const movieData = await movieRes.json();
+
+                // Fetch reviews
+                const reviewsRes = await fetch(`http://localhost:5000/api/reviews/${id}`);
+                if (!reviewsRes.ok) throw new Error('Failed to fetch reviews');
+                const reviews = await reviewsRes.json();
+
+                // Combine movie data with reviews and update state
+                setMovie({ ...movieData, userReviews: reviews });
+                setLoading(false);
             } catch (error) {
-                console.error('Failed to fetch movie:', error);
+                console.error(error);
                 setError(error);
             }
         };
@@ -91,13 +98,11 @@ const MovieDetailsPage = () => {
             if (!response.ok) {
                 throw new Error('Error submitting review');
             }
-            // Fetch updated reviews after submission
             const updatedReviews = await fetchUserReviews(id);
             setMovie((prevMovie) => ({
                 ...prevMovie,
                 userReviews: updatedReviews,
             }));
-            // Clear the user review form
             setUserReview({
                 username: '',
                 rating: '',

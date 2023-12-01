@@ -11,21 +11,6 @@ function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMovieId, setSelectedMovieId] = useState(null);
-  const [autoRotateIndex, setAutoRotateIndex] = useState(0);
-
-  useEffect(() => {
-    const rotateMovies = () => {
-      if (movies.length > 0) {
-        const nextIndex = (autoRotateIndex + 1) % movies.length;
-        setSelectedMovieId(movies[nextIndex].tmdbId);
-        setAutoRotateIndex(nextIndex);
-      }
-    };
-
-    const intervalId = setInterval(rotateMovies, 10000); // Rotate every 10 seconds
-
-    return () => clearInterval(intervalId); // Clear interval on component unmount
-  }, [movies, autoRotateIndex]);
 
   // Function to fetch movies
   const fetchMoviesData = async () => {
@@ -38,6 +23,9 @@ function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
       const moviesData = JSON.parse(responseText);
       setMovies(moviesData);
       setIsLoading(false);
+      if (moviesData.length > 0) {
+        setSelectedMovieId(moviesData[0]._id);
+      }
     } catch (error) {
       console.error('Fetch Error:', error);
     }
@@ -72,18 +60,18 @@ function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
       <h2 className="section-title">Recently Added Movies</h2>
       <div className="carousel-container">
         <div className="carousel-track">
-          {movies.map((movie) => (
-            <div key={movie._id} className="movie-slide" onClick={() => selectMovie(movie._id)}>
-              {selectedMovieId === movie._id && (
-                <div className="trailer-container">
-                  <iframe
-                    key={selectedMovieId}
-                    src={`https://www.youtube.com/embed/${movie.trailerUrl}`}
-                    frameBorder="0"
-                    allow="autoplay; encrypted-media"
-                    allowFullScreen
-                    className="movie-trailer"
-                  ></iframe>
+        {movies.map((movie) => (
+          <div key={movie._id} className="movie-slide" onClick={() => selectMovie(movie._id)}>
+            {selectedMovieId === movie._id && (
+              <div className="trailer-container">
+                <iframe
+                  key={selectedMovieId}
+                  src={`https://www.youtube.com/embed/${movie.trailerUrl}?autoplay=1&mute=1`}
+                  frameBorder="0"
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                  className="movie-trailer"
+                ></iframe>
                   <div className="movie-overlay">
                     <img src={movie.posterImage} alt={movie.title} className="movie-poster-overlay" />
                     <div className="movie-description">{movie.description}</div>
