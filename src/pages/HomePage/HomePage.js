@@ -290,8 +290,7 @@ function HomePage() {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        console.log('Fetched movies:', data);
-        // You can process data here
+        setAllMovies(data); // Update the state with fetched movies
       } catch (error) {
         console.error('Error fetching movies:', error);
       }
@@ -303,18 +302,19 @@ function HomePage() {
   // Rest of the HomePage component remains the same
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
+    console.log("Search term updated:", e.target.value); // Add this line for debugging
   };
 
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
   };
-
+  
   const filteredMovies = allMovies.filter(movie => {
-    const matchTitle = movie.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchCategory = selectedCategory === 'All' || movie.genre === selectedCategory;
-    return matchTitle && matchCategory;
-});
-
+    const titleMatch = movie.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const genreMatch = selectedCategory === 'All' || movie.genre.toLowerCase() === selectedCategory.toLowerCase();
+    return titleMatch && genreMatch;
+  });  
+  
   const handleMovieClick = (movieId) => {
     navigate(`/movie/${movieId}`);
   };
@@ -337,14 +337,41 @@ function HomePage() {
             <option value="Drama">Drama</option>
             <option value="Comedy">Comedy</option>
             <option value="Romance">Romance</option>
+            <option value="Thriller">Thriller</option>
+            <option value="Horror">Horror</option>
             {/* Add more categories as needed */}
           </select>
         </div>
       </div>
-      <MovieCarousel onMovieClick={handleMovieClick} onAddToWatchlist={AddToWatchlist} />
-      <FeaturedToday featuredMovies={featuredMovies} onMovieClick={handleMovieClick}/* other props */ />
-      <ComingSoon comingSoonMovies={comingSoonMovies} onMovieClick={handleMovieClick}/* other props */ />
-      <TopBoxOffice topMovies={topBoxOfficeMovies} onMovieClick={handleMovieClick}/* other props */ />
+
+      {searchTerm || selectedCategory !== 'All' ? (
+        <div className="filtered-movie-list">
+          {filteredMovies.length > 0 ? (
+            filteredMovies.map(movie => (
+              <div key={movie._id} className="movie" onClick={() => handleMovieClick(movie._id)}>
+                <img src={movie.posterImage} alt={movie.title} className="movie-poster" />
+                <div className="movie-info">
+                  <h3>{movie.title}</h3>
+                  {/* other movie details */}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div>No movies found.</div>
+          )}
+        </div>
+      ) : null}
+        {filteredMovies.length === 0 ? (
+          <div>No movies found.</div>
+        ) : (
+          // Your standard movie categories are displayed if there's no search term
+          <>
+            <MovieCarousel onMovieClick={handleMovieClick} onAddToWatchlist={AddToWatchlist} /* other props */ />
+            <FeaturedToday featuredMovies={featuredMovies} onMovieClick={handleMovieClick} /* other props */ />
+            <ComingSoon comingSoonMovies={comingSoonMovies} onMovieClick={handleMovieClick} /* other props */ />
+            <TopBoxOffice topMovies={topBoxOfficeMovies} onMovieClick={handleMovieClick} /* other props */ />
+          </>
+        )}
     </div>
   );
 }

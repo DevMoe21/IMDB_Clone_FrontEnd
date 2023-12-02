@@ -132,11 +132,30 @@ const MovieDetailsPage = () => {
 
     return (
         <div className="movie-details">
-            {/* Movie details layout */}
-            <h1>{movie.title} ({new Date(movie.releaseDate).getFullYear()})</h1>
-            <div className="poster">
-                <img src={movie.posterImage} alt={`${movie.title} Poster`} />
+    <h1>{movie.title} ({new Date(movie.releaseDate).getFullYear()})</h1>
+
+    <div className="top-section">
+        <div className="poster">
+            <img src={movie.posterImage} alt={`${movie.title} Poster`} />
+        </div>
+
+        <div className="trailer">
+            <h2>Trailer</h2>
+            {movie.trailerUrl ? (
+                <iframe
+                    key={id}
+                    src={`https://www.youtube.com/embed/${movie.trailerUrl}`}
+                    frameBorder="0"
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                    className="movie-trailer"
+                ></iframe>
+            ) : (
+                <p>No trailer available.</p>
+            )}
             </div>
+        </div>
+            <h1>Overview</h1>
             <p>{movie.description}</p>
             <div className="detail-section">
                 <strong>Genre:</strong> {movie.genres && movie.genres.join(', ')}
@@ -166,22 +185,6 @@ const MovieDetailsPage = () => {
         <button onClick={goToCastAndDirectorPage} className="view-cast-director-btn">
             View Cast and Director
         </button>            
-        {/* Trailer Box */}
-            <div className="trailer">
-                <h2>Trailer</h2>
-                {movie.trailerUrl ? (
-                    <iframe
-                        key={id}
-                        src={`https://www.youtube.com/embed/${movie.trailerUrl}`}
-                        frameBorder="0"
-                        allow="autoplay; encrypted-media"
-                        allowFullScreen
-                        className="movie-trailer"
-                    ></iframe>
-                ) : (
-                    <p>No trailer available.</p>
-                )}
-            </div>
             {/* User Review Section */}
             <div className="user-review-section">
                 <h2>User Reviews</h2>

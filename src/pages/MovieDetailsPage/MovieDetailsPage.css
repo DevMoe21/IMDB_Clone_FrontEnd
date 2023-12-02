@@ -1,42 +1,67 @@
-/* Enhanced Styles for MovieDetailsPage */
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
 
 .movie-details {
     color: #FFF; /* White text color */
     background-color: #242424; /* Dark background for a cinematic feel */
     font-family: 'Arial', sans-serif;
     padding: 20px;
-    margin: 0 auto; /* Centered layout */
+    margin: 0; /* Remove margin */
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Align content to the left */
+    align-items: center;
     text-align: left; /* Align text to the left */
 }
 
-.movie-details h1 {
-    color: #C0A0D0; /* Purple color for emphasis */
-    font-size: 2.5em; /* Larger font size */
+.top-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap: 20px; /* Spacing between poster and trailer */
     margin-bottom: 20px;
-    text-shadow: 2px 2px 4px #000; /* Text shadow for depth */
 }
+
+.movie-details h1 {
+    color: #C0A0D0; /* Retain the purple for continuity */
+    font-size: 2em; /* Larger size for the header */
+    margin-bottom: 20px;
+    text-align: center; /* Center-align the title for focus */
+}
+
 
 .movie-details p {
-    color: #DDD; /* Light grey for text */
-    font-size: 1em; /* Standard font size */
-    line-height: 1.6; /* Increased line spacing */
-    margin-bottom: 15px;
+    color: #FFFFFF; /* Crisp white for better readability */
+    font-size: 1em; /* Maintain a standard size for simplicity */
+    line-height: 1.6; /* Comfortable line spacing */
+    margin-bottom: 15px; /* Adequate spacing between paragraphs */
+    background-color: #333333; /* Slight contrast background */
+    padding: 10px; /* Padding for better text display */
+    border-radius: 5px; /* Soft rounded corners */
 }
 
-.poster img {
+.highlight {
+    color: #FFD700; /* A soft gold color for highlighting */
+    font-weight: bold;
+}
+
+
+.poster img, .trailer  {
     width: 100%;
-    max-width: 350px;
+    max-width: 400px;
     border-radius: 4px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Stronger shadow for depth */
     margin-bottom: 20px;
 }
 
 .trailer {
-    margin-top: 20px;
-    width: 100%; /* Full width for a more immersive experience */
+    margin-top: 0;
+    flex-grow: 1; /* Allow the trailer to grow */
+    max-width: 900px; /* Full width for a more immersive experience */
     background-color: #000; /* Black background for trailer */
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Box shadow for depth */
@@ -45,7 +70,8 @@
 
 .movie-trailer {
     width: 100%;
-    height: 500px; /* Larger height for better visibility */
+    height: auto; /* Larger height for better visibility */
+    aspect-ratio: 16 / 9;
     border-radius: 8px; /* Rounded corners */
 }
 
@@ -165,12 +191,20 @@
         padding: 15px;
     }
 
+    .movie-details h1 {
+        font-size: 1.5em;
+    }
+
+    .top-section {
+        flex-direction: column;
+    }
+
     .trailer, .user-review-section {
         width: 100%;
     }
 
     .movie-trailer {
-        height: 300px; /* Adjusted height for medium screens */
+        height: auto; /* Adjusted height for medium screens */
     }
 
     .poster img {
