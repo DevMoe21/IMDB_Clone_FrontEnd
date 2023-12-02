@@ -40,23 +40,48 @@ function SignUpPage() {
 
   const handleSignUp = (e) => {
     e.preventDefault();
-    createUserWithEmailAndPassword(auth, email, password)
+  
+    // Check if username or email already exists in MongoDB
+    fetch('http://localhost:5000/api/users/check', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        username: username
+      }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.exists) {
+        setError('Username or email already exists. Please use a different one.');
+        return;
+      }
+  
+      // If not exists, proceed with Firebase authentication
+      createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-            const userId = userCredential.user.uid;
-            createUserInMongoDB(userId, email, username, dateOfBirth, gender);
+          const userId = userCredential.user.uid;
+          createUserInMongoDB(userId, email, username, dateOfBirth, gender);
         })
-        .catch((error) => {
-            if (error.code === 'auth/email-already-in-use') {
-                setError('Email already in use. Please use a different email.');
-            } else {
-                setError('Sign-up Error: ' + error.message);
-            }
+        .catch((firebaseError) => {
+          if (firebaseError.code === 'auth/email-already-in-use') {
+            setError('Email already in use. Please use a different email.');
+          } else {
+            setError('Sign-up Error: ' + firebaseError.message);
+          }
         });
-};
+    })
+    .catch((error) => {
+      setError('Error checking user existence: ' + error.message);
+    });
+  };
 
 
   return (
     <div className="signup-container">
+          {error && <p className="error-message">{error}</p>} {/* Display the error message */}
       <h2>Sign Up</h2>
       <form className="signup-form" onSubmit={handleSignUp}>
         <input 

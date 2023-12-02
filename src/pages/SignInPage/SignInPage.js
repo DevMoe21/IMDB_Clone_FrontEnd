@@ -19,7 +19,7 @@ function SignInPage() {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        navigate('/dashboard');
+        navigate('/user-profile');
       })
       .catch((error) => {
         setErrorMessage(error.message);
@@ -29,7 +29,7 @@ function SignInPage() {
   const signInWithGoogle = () => {
     signInWithPopup(auth, googleProvider)
       .then((result) => {
-        navigate('/dashboard');
+        navigate('/user-profile');
       })
       .catch((error) => {
         setErrorMessage(error.message);
@@ -39,7 +39,7 @@ function SignInPage() {
   const signInWithFacebook = () => {
     signInWithPopup(auth, facebookProvider)
       .then((result) => {
-        navigate('/dashboard');
+        navigate('/user-profile');
       })
       .catch((error) => {
         setErrorMessage(error.message);
