@@ -83,18 +83,26 @@ function UserProfilePage() {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
+      // Update the local state first
+      setEditFormData({
+        ...editFormData,
+        username: editFormData.username, // Update username
+        gender: editFormData.gender, // Update gender
+        // Add other fields as needed
+      });
+  
       const response = await fetch(`http://localhost:5000/api/users/${user._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editFormData)
       });
       const updatedUser = await response.json();
-      setUserData(updatedUser); // Update state with new data
-      setIsEditing(false);
-    } catch (error) {
-      console.error('Error updating user:', error);
-    }
-  };
+    setUserData(updatedUser); // Update state with new data
+    setIsEditing(false);
+  } catch (error) {
+    console.error('Error updating user:', error);
+  }
+};
 
   const handleInputChange = (event) => {
     setEditFormData({
