@@ -19,7 +19,11 @@ function SignInPage() {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        navigate('/dashboard');
+<<<<<<< Updated upstream
+        navigate('/user-profile');
+=======
+        navigate('/user-profile'); // Redirect to dashboard or home page after successful login
+>>>>>>> Stashed changes
       })
       .catch((error) => {
         setErrorMessage(error.message);
@@ -29,7 +33,11 @@ function SignInPage() {
   const signInWithGoogle = () => {
     signInWithPopup(auth, googleProvider)
       .then((result) => {
-        navigate('/dashboard');
+<<<<<<< Updated upstream
+        navigate('/user-profile');
+=======
+        navigate('/user-profile'); // Redirect after successful Google sign-in
+>>>>>>> Stashed changes
       })
       .catch((error) => {
         setErrorMessage(error.message);
@@ -39,7 +47,11 @@ function SignInPage() {
   const signInWithFacebook = () => {
     signInWithPopup(auth, facebookProvider)
       .then((result) => {
-        navigate('/dashboard');
+<<<<<<< Updated upstream
+        navigate('/user-profile');
+=======
+        navigate('/user-profile'); // Redirect after successful Facebook sign-in
+>>>>>>> Stashed changes
       })
       .catch((error) => {
         setErrorMessage(error.message);

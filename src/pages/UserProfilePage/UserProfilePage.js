@@ -1,44 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../FireBase/AuthContext.js';
+import { useAuth } from '../../FireBase/AuthContext.js'; // Update the path as necessary
 import './UserProfilePage.css';
 import defaultProfilePic from '../../components/default-profile-picture.jpg';
 import { getAuth, signOut } from 'firebase/auth';
 
-function UserProfilePage() {
+const useUser = () => {
+  const [user, setUser] = useState(null);
   const { currentUser } = useAuth();
+
+  useEffect(() => {
+    if (currentUser && currentUser.email) {
+      // Fetch user data from MongoDB by email
+      fetch(`http://localhost:5000/api/users/email/${currentUser.email}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => setUser(data))
+        .catch(error => console.error('Error fetching user data:', error));
+    }
+  }, [currentUser]);
+
+  return user;
+};
+
+function UserProfilePage() {
   const [userData, setUserData] = useState(null); // State to store fetched user data
   const [isEditing, setIsEditing] = useState(false);
+  const user = useUser();
   const [editFormData, setEditFormData] = useState({
     username: '',
     gender: '',
     // Initialize other fields as needed
   });
 
-  
   const auth = getAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/api/users/${currentUser.uid}`);
-        const data = await response.json();
-        setUserData(data); // Set fetched data to state
-        setEditFormData({ // Initialize form data with fetched data
-          username: data.username,
-          gender: data.gender,
-          // Initialize other fields as needed
-        });
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    if (currentUser) {
-      fetchUserData();
+    if (user) {
+      setUserData(user); // Set fetched data to state
+      setEditFormData({ // Initialize form data with fetched data
+        username: user.username,
+        gender: user.gender,
+        // Initialize other fields as needed
+      });
     }
-  }, [currentUser]);
+  }, [user]);
 
 
   const formatDate = (dateString) => {
@@ -72,7 +83,7 @@ function UserProfilePage() {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:5000/api/users/${currentUser.uid}`, {
+      const response = await fetch(`http://localhost:5000/api/users/${user._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editFormData)
@@ -113,7 +124,7 @@ function UserProfilePage() {
   
   const updateProfilePicture = async (formData) => {
     try {
-      await fetch(`http://localhost:5000/api/users/${currentUser.uid}/profile-picture`, {
+      await fetch(`http://localhost:5000/api/users/${user._id}/profile-picture`, {
         method: 'POST',
         body: formData // No need to set Content-Type header
       });
@@ -173,16 +184,16 @@ function UserProfilePage() {
         ) : (
           <div className="user-info">
             <img
-              src={currentUser.profilePicture || defaultProfilePic}
+              src={user.profilePicture || defaultProfilePic}
               alt="Profile"
               className="profile-picture"
               onClick={handleChangeProfilePicture}
             />
-            <h1 className="username">{currentUser.username || 'Anonymous'}</h1>
-            <p className="gender">{currentUser.gender}</p>
-            <p className="dob">Date of Birth: {currentUser.dob}</p>
-            <p className="country">Country: {currentUser.country}</p>
-            <p className="join-date">Joined: {formatDate(currentUser.joinDate)}</p>
+            <h1 className="username">{user.username || 'Anonymous'}</h1>
+            <p className="gender">{user.gender}</p>
+            <p className="dob">Date of Birth: {user.dateOfBirth}</p>
+            <p className="country">Country: {user.country}</p>
+            <p className="join-date">Joined: {formatDate(user.accountCreationDate)}</p>
             <div className="button-group">
               <button className="btn edit-profile-btn" onClick={handleEditProfile}>
                 Edit Profile
@@ -197,8 +208,8 @@ function UserProfilePage() {
         <div className="user-activity">
           <section className="user-ratings">
             <h2>Ratings</h2>
-            {currentUser.ratings && currentUser.ratings.length > 0 ? (
-              currentUser.ratings.map((rating) => (
+            {user.ratings && user.ratings.length > 0 ? (
+              user.ratings.map((rating) => (
                 <p key={rating.id}>
                   {rating.movieTitle}: {rating.score}/5
                 </p>
@@ -210,8 +221,8 @@ function UserProfilePage() {
 
           <section className="user-top-picks">
             <h2>Top Picks</h2>
-            {currentUser.topPicks && currentUser.topPicks.length > 0 ? (
-              currentUser.topPicks.map((pick) => <p key={pick.id}>{pick.movieTitle}</p>)
+            {user.topPicks && user.topPicks.length > 0 ? (
+              user.topPicks.map((pick) => <p key={pick.id}>{pick.movieTitle}</p>)
             ) : (
               <p>No top picks available</p>
             )}
@@ -219,8 +230,8 @@ function UserProfilePage() {
 
           <section className="user-reviews">
             <h2>Recent Reviews</h2>
-            {currentUser.reviews && currentUser.reviews.length > 0 ? (
-              currentUser.reviews.map((review) => (
+            {user.reviews && user.reviews.length > 0 ? (
+              user.reviews.map((review) => (
                 <p key={review.id}>
                   {review.movieTitle}: {review.content}
                 </p>
