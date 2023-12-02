@@ -97,4 +97,62 @@ h2 {
   font-size: 1.5em;
 }
 
+.password-reset-modal {
+  position: fixed; /* Fixed position */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  display: flex;
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  z-index: 1000; /* Ensure it's above other content */
+}
+
+.password-reset-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%; /* Responsive width */
+  max-width: 400px; /* Max width */
+}
+
+.password-reset-modal input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.password-reset-modal button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 10px; /* Space between buttons */
+}
+
+/* Button to trigger the modal */
+.reset-password-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 15px; /* Space from other elements */
+  display: block; /* Full width */
+}
+
+.reset-password-btn:hover {
+  background-color: #0056b3;
+}
+
   

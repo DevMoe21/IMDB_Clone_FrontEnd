@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import './SignInPage.css';
 import { auth, googleProvider, facebookProvider } from '../../FireBase/firebaseConfig';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'; // Import signInWithPopup
+import { signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';
 import googleIcon from '../icons8-google-30.png';
 import facebookIcon from '../icons8-facebook-50.png';
 import { useNavigate } from 'react-router-dom';
 
-
 function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [resetEmail, setResetEmail] = useState('');
+  const [showResetModal, setShowResetModal] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function SignInPage() {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        navigate('/dashboard'); // Redirect to dashboard or home page after successful login
+        navigate('/dashboard');
       })
       .catch((error) => {
         setErrorMessage(error.message);
@@ -28,7 +29,7 @@ function SignInPage() {
   const signInWithGoogle = () => {
     signInWithPopup(auth, googleProvider)
       .then((result) => {
-        navigate('/dashboard'); // Redirect after successful Google sign-in
+        navigate('/dashboard');
       })
       .catch((error) => {
         setErrorMessage(error.message);
@@ -38,12 +39,40 @@ function SignInPage() {
   const signInWithFacebook = () => {
     signInWithPopup(auth, facebookProvider)
       .then((result) => {
-        navigate('/dashboard'); // Redirect after successful Facebook sign-in
+        navigate('/dashboard');
       })
       .catch((error) => {
         setErrorMessage(error.message);
       });
   };
+
+  const handlePasswordReset = () => {
+    sendPasswordResetEmail(auth, resetEmail)
+      .then(() => {
+        alert('Password reset email sent!');
+        setResetEmail('');
+        setShowResetModal(false);
+      })
+      .catch((error) => {
+        setErrorMessage(error.message);
+      });
+  };
+
+  const PasswordResetModal = () => (
+    <div className="password-reset-modal">
+      <div className="password-reset-content">
+        <h2>Password Reset</h2>
+        <input 
+          type="email" 
+          value={resetEmail} 
+          onChange={(e) => setResetEmail(e.target.value)} 
+          placeholder="Enter your email" 
+        />
+        <button onClick={handlePasswordReset}>Send Reset Email</button>
+        <button onClick={() => setShowResetModal(false)}>Close</button>
+      </div>
+    </div>
+  );
 
   return (
     <div className="signin-container">
@@ -64,7 +93,7 @@ function SignInPage() {
           placeholder="Password" 
           required 
         />
-         <label>
+        <label>
           <input
             type="checkbox"
             checked={rememberMe}
@@ -74,15 +103,20 @@ function SignInPage() {
         </label>
         <button type="submit" className="signin-btn">Sign In</button>
       </form>
-      <button type="button" className="social-btn google-btn" onClick={signInWithGoogle}>
-          <img src={googleIcon} alt="Google sign-in" className="social-icon" />
-          Sign in with Google
-        </button>
-        <button type="button" className="social-btn facebook-btn" onClick={signInWithFacebook}>
-          <img src={facebookIcon} alt="Facebook sign-in" className="social-icon" />
-          Sign in with Facebook
-        </button>
+      <button className="social-btn google-btn" onClick={signInWithGoogle}>
+        <img src={googleIcon} alt="Google sign-in" className="social-icon" />
+        Sign in with Google
+      </button>
+      <button className="social-btn facebook-btn" onClick={signInWithFacebook}>
+        <img src={facebookIcon} alt="Facebook sign-in" className="social-icon" />
+        Sign in with Facebook
+      </button>
       <p className="signup-link">Don't have an account? <a href="/signup">Sign Up</a></p>
+      <button className="reset-password-btn" onClick={() => setShowResetModal(true)}>
+        Reset Password
+      </button>
+
+      {showResetModal && <PasswordResetModal />}
     </div>
   );
 }
