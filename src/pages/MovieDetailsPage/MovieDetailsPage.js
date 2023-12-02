@@ -34,7 +34,7 @@ const MovieDetailsPage = () => {
 
     const fetchUserReviews = async (movieId) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/reviews/${movieId}`);
+            const response = await fetch(`http://localhost:5000/api/reviews/movie/${movieId}`);
             if (!response.ok) {
                 throw new Error('Error fetching reviews');
             }
@@ -59,6 +59,7 @@ const MovieDetailsPage = () => {
 
         return { ...movieData, genres: genresData, director, actors: actorsData, writers: writersData };
     };
+
     const fetchReviewById = async (reviewId) => {
         try {
             const response = await fetch(`http://localhost:5000/api/reviews/${reviewId}`);
@@ -68,7 +69,7 @@ const MovieDetailsPage = () => {
             return await response.json();
         } catch (error) {
             console.error('Failed to fetch review:', error);
-            return null; // or handle the error as needed
+            return null;
         }
     };
     
@@ -81,20 +82,23 @@ const MovieDetailsPage = () => {
     
                 movieData = await enrichMovieData(movieData);
     
-                const reviewPromises = movieData.reviewIds ? movieData.reviewIds.map(fetchReviewById) : [];
-                const reviews = await Promise.all(reviewPromises);
-    
-                setMovie({ ...movieData, userReviews: reviews });
-                setLoading(false);
+                // Fetch reviews directly if reviewIds are available
+                if (movieData.reviews) {
+                    const reviews = await fetchUserReviews(id);
+                    setMovie({ ...movieData, userReviews: reviews });
+                } else {
+                    setMovie(movieData);
+                }
             } catch (error) {
                 console.error(error);
                 setError(error);
+            } finally {
                 setLoading(false);
             }
         };
     
         fetchMovieAndReviews();
-    }, [id]);    
+    }, [id]); 
     
 
     // Handle user review form submission
@@ -223,9 +227,13 @@ const MovieDetailsPage = () => {
                     {movie.userReviews && movie.userReviews.length > 0 ? (
                         movie.userReviews.map((review, index) => (
                             <div key={index} className="user-review">
-                                <p><strong>User:</strong> {review.user}</p>
+                                {review.user && (
+                                    <>
+                                <p><strong>User:</strong> {review.user.username}</p>
                                 <p><strong>Rating:</strong> {review.rating}/5</p>
-                                <p><strong>Review:</strong> {review.cotent}</p>
+                                <p><strong>Review:</strong> {review.content}</p>
+                                </>
+                                )}
                             </div>
                         ))
                     ) : (
