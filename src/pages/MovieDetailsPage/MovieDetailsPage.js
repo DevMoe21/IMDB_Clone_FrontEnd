@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './MovieDetailsPage.css';
 
 const MovieDetailsPage = () => {
@@ -12,6 +13,7 @@ const MovieDetailsPage = () => {
         rating: '',
         comment: '',
     });
+    const navigate = useNavigate();
 
     // Fetch names using the respective ID
     const fetchDataById = async (endpoint, id) => {
@@ -24,6 +26,10 @@ const MovieDetailsPage = () => {
             console.error(`Failed to fetch ${endpoint}:`, error);
             return '';
         }
+    };
+    
+    const goToCastAndDirectorPage = () => {
+        navigate(`/cast_director/${id}`);
     };
 
     const fetchUserReviews = async (movieId) => {
@@ -157,7 +163,10 @@ const MovieDetailsPage = () => {
                 ) : null}
             </div>
         </div>
-            {/* Trailer Box */}
+        <button onClick={goToCastAndDirectorPage} className="view-cast-director-btn">
+            View Cast and Director
+        </button>            
+        {/* Trailer Box */}
             <div className="trailer">
                 <h2>Trailer</h2>
                 {movie.trailerUrl ? (
