@@ -25,6 +25,7 @@ function App() {
           <Route path="/user-profile" element={<UserProfilePage/>} />
           <Route path="/watchlist" element={<Watchlist />} />
           <Route path="/cast-and-director" element={<CastAndDirectorPage/>}/>
+          <Route path="AddToWatchlist" element={<Watchlist />} />
         </Routes>
         <Footer />
       </Router>
