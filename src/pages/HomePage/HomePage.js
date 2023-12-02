@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './HomePage.css';
-import AddToWatchlist from '../WhatchlistPage/AddToWatchlist';
+import AddToWatchlist from '../WhatchlistPage/AddToWatchlist.js'; // Adjust the path to match the location of AddToWatchlist.js
 
 // MovieCarousel Component
 function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
