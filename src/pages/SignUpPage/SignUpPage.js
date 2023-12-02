@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import './SignUpPage.css'; // Ensure this CSS file is correctly referenced
+import './SignUpPage.css';
 import { auth } from '../../FireBase/firebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { database } from '../../FireBase/firebaseConfig';
-import { ref, set } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
-
 
 function SignUpPage() {
   const [email, setEmail] = useState('');
@@ -13,31 +10,55 @@ function SignUpPage() {
   const [username, setUsername] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [gender, setGender] = useState('');
+  const [error, setError] = useState('');
 
-  const navigate = useNavigate(); // import useNavigate from 'react-router-dom'
+  const navigate = useNavigate();
 
-  createUserWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Store additional user data in Realtime Database
-    const userId = userCredential.user.uid;
-    set(ref(database, 'users/' + userId), {
-      username: username,
-      dateOfBirth: dateOfBirth,
-      gender: gender
-    }).then(() => {
-      navigate('/dashboard'); // Redirect to dashboard or home page after successful sign-up
+  const createUserInMongoDB = (userId, email, username, dateOfBirth, gender) => {
+    fetch('http://localhost:5000/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        uid: userId,
+        email,
+        username,
+        dateOfBirth,
+        gender
+      }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('User created in MongoDB Atlas:', data);
+      navigate('/dashboard'); // Redirect after successful sign-up
+    })
+    .catch((error) => {
+      setError('Error creating user in MongoDB: ' + error.message);
     });
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-  });
+  };
+
+  const handleSignUp = (e) => {
+    e.preventDefault();
+    createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            const userId = userCredential.user.uid;
+            createUserInMongoDB(userId, email, username, dateOfBirth, gender);
+        })
+        .catch((error) => {
+            if (error.code === 'auth/email-already-in-use') {
+                setError('Email already in use. Please use a different email.');
+            } else {
+                setError('Sign-up Error: ' + error.message);
+            }
+        });
+};
 
 
   return (
     <div className="signup-container">
       <h2>Sign Up</h2>
-      <form className="signup-form" onSubmit={createUserWithEmailAndPassword}>
+      <form className="signup-form" onSubmit={handleSignUp}>
         <input 
           type="text" 
           value={username} 

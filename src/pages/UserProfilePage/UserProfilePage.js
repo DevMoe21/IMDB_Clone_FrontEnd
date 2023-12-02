@@ -1,22 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../FireBase/AuthContext.js'; // Update path as necessary
+import { useAuth } from '../../FireBase/AuthContext.js';
 import './UserProfilePage.css';
 import defaultProfilePic from '../../components/default-profile-picture.jpg';
-import { getAuth, signOut } from 'firebase/auth'; // Import signOut
+import { getAuth, signOut } from 'firebase/auth';
 
 function UserProfilePage() {
-  const { currentUser, updateUser } = useAuth(); // Using Firebase Auth user
+  const { currentUser } = useAuth();
+  const [userData, setUserData] = useState(null); // State to store fetched user data
   const [isEditing, setIsEditing] = useState(false);
   const [editFormData, setEditFormData] = useState({
-    // Add other fields as needed
-   // Initialize with currentUser data if available
-   username: currentUser?.displayName, // or another property based on your setup
-   // Add other fields as needed
- });
+    username: '',
+    gender: '',
+    // Initialize other fields as needed
+  });
 
+  
   const auth = getAuth();
-  const navigate = useNavigate(); // Updated to use navigate
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/users/${currentUser.uid}`);
+        const data = await response.json();
+        setUserData(data); // Set fetched data to state
+        setEditFormData({ // Initialize form data with fetched data
+          username: data.username,
+          gender: data.gender,
+          // Initialize other fields as needed
+        });
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    if (currentUser) {
+      fetchUserData();
+    }
+  }, [currentUser]);
+
 
   const formatDate = (dateString) => {
     let date;
@@ -34,7 +57,7 @@ function UserProfilePage() {
     }
   };
 
-  if (!currentUser) {
+  if (!userData) {
     return <div>Loading user data...</div>;
   }
 
@@ -46,10 +69,20 @@ function UserProfilePage() {
     navigate('/watchlist');
   };
 
-  const handleFormSubmit = (event) => {
+  const handleFormSubmit = async (event) => {
     event.preventDefault();
-    updateUser(editFormData);
-    setIsEditing(false);
+    try {
+      const response = await fetch(`http://localhost:5000/api/users/${currentUser.uid}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editFormData)
+      });
+      const updatedUser = await response.json();
+      setUserData(updatedUser); // Update state with new data
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating user:', error);
+    }
   };
 
   const handleInputChange = (event) => {
@@ -81,11 +114,11 @@ function UserProfilePage() {
             <div className="edit-profile-picture">
               <label htmlFor="profilePicture">Profile Picture:</label>
               <input
-                type="text"
+                type="file"
                 id="profilePicture"
                 name="profilePicture"
-                value={editFormData.profilePicture}
-                onChange={handleInputChange}
+                onChange={handleChangeProfilePicture}
+                accept='image/*'
               />
             </div>
             <div className="edit-username">
