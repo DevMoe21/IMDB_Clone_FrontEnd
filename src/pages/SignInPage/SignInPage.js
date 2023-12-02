@@ -14,22 +14,76 @@ function SignInPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+  const [error, setError] = useState('');
+
 
   const signInWithEmail = (e) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        navigate('/user-profile');
+        navigate('/user-profile'); // Redirect to dashboard or home page after successful login
       })
       .catch((error) => {
         setErrorMessage(error.message);
       });
   };
+  const createUserInMongoDB = (userId, email, username, dateOfBirth, gender) => {
+    fetch('http://localhost:5000/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        uid: userId,
+        email,
+        username,
+        dateOfBirth,
+        gender
+      }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('User created in MongoDB Atlas:', data);
+      navigate('/user-profile'); // Redirect after successful sign-up
+    })
+    .catch((error) => {
+      setError('Error creating user in MongoDB: ' + error.message);
+    });
+  };
 
   const signInWithGoogle = () => {
     signInWithPopup(auth, googleProvider)
       .then((result) => {
-        navigate('/user-profile');
+        const userId = result.user.uid;
+        const email = result.user.email;
+        const username = result.user.displayName;
+        const gender = result.additionalUserInfo.profile.gender;
+        const dateOfBirth = result.additionalUserInfo.profile.birthday;
+        const country = result.additionalUserInfo.profile.locale;
+
+        // Check if user exists in MongoDB
+        fetch('http://localhost:5000/api/users/check', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            username: username
+          }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (!data.exists) {
+            // If user doesn't exist, create user in MongoDB
+            createUserInMongoDB(userId, email, username, dateOfBirth, gender, country);
+          }
+
+          navigate('/user-profile'); // Redirect after successful sign-in
+        })
+        .catch((error) => {
+          setErrorMessage('Error checking user existence: ' + error.message);
+        });
       })
       .catch((error) => {
         setErrorMessage(error.message);
@@ -39,13 +93,41 @@ function SignInPage() {
   const signInWithFacebook = () => {
     signInWithPopup(auth, facebookProvider)
       .then((result) => {
-        navigate('/user-profile');
+        const userId = result.user.uid;
+        const email = result.user.email;
+        const username = result.user.displayName;
+        const gender = result.additionalUserInfo.profile.gender;
+        const dateOfBirth = result.additionalUserInfo.profile.birthday;
+        const country = result.additionalUserInfo.profile.locale;
+
+        // Check if user exists in MongoDB
+        fetch('http://localhost:5000/api/users/check', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            username: username
+          }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (!data.exists) {
+            // If user doesn't exist, create user in MongoDB
+            createUserInMongoDB(userId, email, username, dateOfBirth, gender, country);
+          }
+
+          navigate('/user-profile'); // Redirect after successful sign-in
+        })
+        .catch((error) => {
+          setErrorMessage('Error checking user existence: ' + error.message);
+        });
       })
       .catch((error) => {
         setErrorMessage(error.message);
       });
   };
-
   const handlePasswordReset = () => {
     sendPasswordResetEmail(auth, resetEmail)
       .then(() => {
