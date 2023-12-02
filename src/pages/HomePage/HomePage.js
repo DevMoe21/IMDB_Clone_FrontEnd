@@ -280,6 +280,7 @@ function HomePage() {
   const [comingSoonMovies, setComingSoonMovies] = useState([]);
   const [topBoxOfficeMovies, setTopBoxOfficeMovies] = useState([]);
   const [featuredMovies, setFeaturedMovies] = useState([]);
+  const [selectedMovieId, setSelectedMovieId] = useState(null);
 
   // Fetch data for allMovies
   useEffect(() => {
@@ -319,6 +320,11 @@ function HomePage() {
     navigate(`/movie/${movieId}`);
   };
 
+  const handleAddToWatchlist = (movieId) => {
+    setSelectedMovieId(movieId);
+    console.log(`Movie with ID ${movieId} added to watchlist`);
+  };
+
   return (
     <div className="homepage">
       <div className="title-section">
@@ -353,6 +359,7 @@ function HomePage() {
                 <div className="movie-info">
                   <h3>{movie.title}</h3>
                   {/* other movie details */}
+                  {selectedMovieId && <AddToWatchlist movieId={selectedMovieId} />}
                 </div>
               </div>
             ))
@@ -366,10 +373,10 @@ function HomePage() {
         ) : (
           // Your standard movie categories are displayed if there's no search term
           <>
-            <MovieCarousel onMovieClick={handleMovieClick} onAddToWatchlist={AddToWatchlist} /* other props */ />
-            <FeaturedToday featuredMovies={featuredMovies} onMovieClick={handleMovieClick} /* other props */ />
-            <ComingSoon comingSoonMovies={comingSoonMovies} onMovieClick={handleMovieClick} /* other props */ />
-            <TopBoxOffice topMovies={topBoxOfficeMovies} onMovieClick={handleMovieClick} /* other props */ />
+            <MovieCarousel onMovieClick={handleMovieClick} onAddToWatchlist={handleAddToWatchlist} />
+            <FeaturedToday featuredMovies={featuredMovies} onMovieClick={handleMovieClick} onAddToWatchlist={handleAddToWatchlist} />
+            <ComingSoon comingSoonMovies={comingSoonMovies} onMovieClick={handleMovieClick} onAddToWatchlist={handleAddToWatchlist} />
+            <TopBoxOffice topMovies={topBoxOfficeMovies} onMovieClick={handleMovieClick} onAddToWatchlist={handleAddToWatchlist} />
           </>
         )}
     </div>

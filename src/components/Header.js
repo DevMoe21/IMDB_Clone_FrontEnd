@@ -1,9 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { UserContext } from '../pages/UserContext.js'; // Adjust the path as necessary
 import './Header.css';
-import defaultProfilePic from './default-profile-picture.jpg'; // Make sure the path is correct
-import FilmHubLogo from './FilmHubLogo.png'; // Update with the correct path
+import defaultProfilePic from './default-profile-picture.jpg';
+import FilmHubLogo from './FilmHubLogo.png';
 import { useAuth } from '../FireBase/AuthContext.js';
 import { getAuth, signOut } from 'firebase/auth';
 
@@ -11,25 +10,20 @@ function Header() {
     const { currentUser } = useAuth();
     const auth = getAuth();
 
-    const handleLogout = () => {
-        signOut(auth).then(() => {
-            // Sign-out successful.
-        }).catch((error) => {
-            // An error happened.
-            console.error('Logout Error:', error);
-        });
-    };
+    const [profilePicture, setProfilePicture] = useState(currentUser?.profilePicture || defaultProfilePic);
+    const [username, setUsername] = useState(currentUser?.username || 'User');
 
-    const getProfilePicture = () => {
-        return currentUser && currentUser.profilePicture ? currentUser.profilePicture : defaultProfilePic;
+    const updateHeaderInfo = (newProfilePicture, newUsername) => {
+        setProfilePicture(newProfilePicture);
+        setUsername(newUsername);
     };
 
     return (
         <header className="header">
             <div className="header-logo">
-            <Link to="/">
-                <img src={FilmHubLogo} alt="FilmHub" />
-            </Link>
+                <Link to="/">
+                    <img src={FilmHubLogo} alt="FilmHub" />
+                </Link>
             </div>
             <nav className="header-nav">
                 {currentUser ? (
@@ -37,11 +31,11 @@ function Header() {
                         <Link to="/user-profile" className="nav-link">
                             <div className="user-info">
                                 <img
-                                    src={getProfilePicture()}
-                                    alt={`${currentUser.username || 'User'}'s profile`}
+                                    src={profilePicture}
+                                    alt={`${username}'s profile`}
                                     className="user-avatar"
                                 />
-                                <span className="user-username">{currentUser.username}</span>
+                                <span className="user-username">{username}</span>
                             </div>
                         </Link>
                     </>
@@ -57,5 +51,3 @@ function Header() {
 }
 
 export default Header;
-
-

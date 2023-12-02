@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../FireBase/AuthContext.js'; // Update the path as necessary
 
 const useUser = () => {
@@ -23,51 +23,40 @@ const useUser = () => {
   return user;
 };
 
-
-function AddToWatchlist({ onAddToWatchlist }) {
-  const [movieId, setMovieId] = useState('');
+function AddToWatchlist({ movieId }) {
   const user = useUser();
+  const [statusMessage, setStatusMessage] = useState('');
 
-  const handleAddClick = () => {
-    // Call the onAddToWatchlist function with the selected movieId
-    onAddToWatchlist(movieId);
-
-    // Make a POST request to the /users/:userId/UserWatchlist endpoint
-    fetch(`http://localhost:5000/api/UserWatchlist/users/${user._id}/UserWatchlist`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        movieId: movieId,
-      }),
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Movie added to watchlist:', data);
-      // Clear the input field after adding to watchlist
-      setMovieId('');
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-  };
-  const handleInputChange = (event) => {
-    setMovieId(event.target.value);
-  };
+  useEffect(() => {
+    // Ensure we have the user and movieId before making the request
+    if (user && user._id && movieId) {
+      fetch(`http://localhost:5000/api/UserWatchlist/users/${user._id}/UserWatchlist`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ movieId: movieId }),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to add movie to watchlist');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Movie added to watchlist:', data);
+        setStatusMessage('Movie successfully added to watchlist!');
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        setStatusMessage('Failed to add movie to watchlist.');
+      });
+    }
+  }, [user, movieId]);
 
   return (
     <div>
-      <h2>Add to Watchlist</h2>
-      <div>
-        <input
-          type="text"
-          placeholder="Enter Movie ID"
-          value={movieId}
-          onChange={handleInputChange}
-        />
-        <button onClick={handleAddClick}>Add to Watchlist</button>
-      </div>
+      {statusMessage && <p>{statusMessage}</p>}
     </div>
   );
 }

@@ -129,6 +129,21 @@ function UserProfilePage() {
   
     updateProfilePicture(formData);
   };
+
+  const updateHeaderInfo = (newProfilePicture, newUsername) => {
+    // Here, you can update the header directly
+    // For simplicity, you can access the header elements by their IDs (assuming they have IDs)
+    const profilePictureElement = document.getElementById('header-profile-picture');
+    const usernameElement = document.getElementById('header-username');
+
+    if (profilePictureElement) {
+        profilePictureElement.src = newProfilePicture;
+    }
+
+    if (usernameElement) {
+        usernameElement.textContent = newUsername;
+    }
+};
   
   const updateProfilePicture = async (formData) => {
     try {
@@ -137,8 +152,9 @@ function UserProfilePage() {
         body: formData // No need to set Content-Type header
       });
       // Handle successful update
+      updateHeaderInfo(formData.get('profilePicture'), user.username);
     } catch (error) {
-      console.error('Error updating profile picture:', error);
+        console.error('Error updating profile picture:', error);
     }
   };
 
