@@ -101,9 +101,26 @@ function UserProfilePage() {
     }
   };
 
-  const handleChangeProfilePicture = () => {
-
-
+  const handleChangeProfilePicture = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append('profilePicture', file);
+  
+    updateProfilePicture(formData);
+  };
+  
+  const updateProfilePicture = async (formData) => {
+    try {
+      await fetch(`http://localhost:5000/api/users/${currentUser.uid}/profile-picture`, {
+        method: 'POST',
+        body: formData // No need to set Content-Type header
+      });
+      // Handle successful update
+    } catch (error) {
+      console.error('Error updating profile picture:', error);
+    }
   };
 
   return (
