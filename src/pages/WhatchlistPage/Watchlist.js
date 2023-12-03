@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../FireBase/AuthContext.js';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './WatchlistPage.css';
 
 
@@ -29,6 +30,7 @@ const Watchlist = () => {
     const user = useUser();
     const [watchlistMovies, setWatchlistMovies] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (user && user.email) {
@@ -65,6 +67,10 @@ const Watchlist = () => {
         return <div>Your watchlist is empty.</div>;
     }
 
+    const handleMovieClick = (movieId) => {
+        navigate(`/movie/${movieId}`); // Navigate to MovieDetailPage
+    };
+
     // Group movies by genre
     const moviesByGenre = watchlistMovies.reduce((acc, movie) => {
         const genre = movie.genres || 'Unknown'; // Handle movies without a genre
@@ -73,7 +79,9 @@ const Watchlist = () => {
         return acc;
     }, {});
 
-    const handleRemoveFromWatchlist = (movieId) => {
+    const handleRemoveFromWatchlist = (event, movieId) => {
+        event.stopPropagation(); // Prevent event from bubbling up to the parent
+    
         const movie = watchlistMovies.find(movie => movie._id === movieId);
         if (!movie) {
             console.error('Movie not found in watchlist:', movieId);
@@ -104,22 +112,17 @@ const Watchlist = () => {
     return (
         <div className="watchlist">
             <h2>Your Watchlist</h2>
-            {Object.entries(moviesByGenre).map(([genres, movies]) => (
-                <section key={genres}>
-                    <h3>{genres}</h3>
-                    <div className="watchlist-genre">
-                        {movies.map(movie => (
-                            <div key={movie._id} className="watchlist-item">
-                                <img src={movie.posterImage} alt={movie.title} className="watchlist-image" />
-                                <div className="watchlist-info">
-                                    <span className="watchlist-title">{movie.title}</span>
-                                    <button onClick={() => handleRemoveFromWatchlist(movie._id)}>Remove</button>
-                                </div>
-                            </div>
-                        ))}
+            <div className="watchlist-movies">
+                {watchlistMovies.map(movie => (
+                    <div key={movie._id} className="watchlist-item" onClick={() => handleMovieClick(movie._id)}>
+                        <img src={movie.posterImage} alt={movie.title} className="watchlist-image" />
+                        <div className="watchlist-info">
+                            <span className="watchlist-title">{movie.title}</span>
+                            <button onClick={(e) => handleRemoveFromWatchlist(e, movie._id)}>Remove</button>
+                        </div>
                     </div>
-                </section>
-            ))}
+                ))}
+            </div>
         </div>
     );
 };
