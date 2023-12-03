@@ -6,17 +6,18 @@ import './MovieDetailsPage.css';
 
 const MovieDetailsPage = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
+    const { currentUser } = useAuth();
+
     const [movie, setMovie] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { currentUser } = useAuth();
+    const [userReviews, setUserReviews] = useState([]);
     const [userReview, setUserReview] = useState({
-        username: '',
         rating: '',
         comment: '',
     });
-    const navigate = useNavigate();
-
+    
     // Fetch names using the respective ID
     const fetchDataById = async (endpoint, id) => {
         try {
@@ -52,14 +53,13 @@ const MovieDetailsPage = () => {
         const genres = Array.isArray(movieData.genres) ? movieData.genres : [movieData.genres];
         const actors = Array.isArray(movieData.actor) ? movieData.actor : [movieData.actor];
         const writers = Array.isArray(movieData.writer) ? movieData.writer : [movieData.writer];
-        const reviews = Array.isArray(movieData.reviews) ? movieData.reviews : [movieData.reviews];
 
         const genresData = await Promise.all(genres.map(id => fetchDataById('genres', id)));
         const director = await fetchDataById('directors', movieData.director);
         const actorsData = await Promise.all(actors.map(id => fetchDataById('actors', id)));
         const writersData = await Promise.all(writers.map(id => fetchDataById('writers', id)));
-        const reviewsData = await Promise.all(reviews.map(reviews => fetchReviewById(reviews._id)));
-        return { ...movieData, genres: genresData, director, actors: actorsData, writers: writersData, userReviews: reviewsData };
+
+        return { ...movieData, genres: genresData, director, actors: actorsData, writers: writersData };
     };
 
     const fetchReviewById = async (reviewId) => {
@@ -76,7 +76,9 @@ const MovieDetailsPage = () => {
     };
     
     useEffect(() => {
-        const fetchMovieAndReviews = async () => {
+        const fetchMovieDetailsAndReviews = async () => {
+            setLoading(true);
+
             try {
                 const movieResponse = await fetch(`http://localhost:5000/api/movies/${id}`);
                 if (!movieResponse.ok) throw new Error('Failed to fetch movie details');
@@ -110,34 +112,34 @@ const MovieDetailsPage = () => {
     // Handle user review form submission
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
-
+    
         if (!userReview.rating || !userReview.comment.trim()) {
             alert("Please fill in both rating and review.");
             return;
         }
-
+    
         const reviewSubmission = {
             ...userReview,
             movieId: id,
             username: currentUser?.username || 'Anonymous'
         };
-
+    
         try {
             const response = await fetch(`http://localhost:5000/api/reviews`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(reviewSubmission),
             });
-    
+        
             if (!response.ok) throw new Error('Error submitting review');
-    
+        
             const newReview = await response.json();
-    
+        
             setMovie(prevMovie => {
-                const updatedReviews = [newReview, ...(prevMovie.userReviews || [])];
+                const updatedReviews = prevMovie.userReviews ? [newReview, ...prevMovie.userReviews] : [newReview];
                 return { ...prevMovie, userReviews: updatedReviews };
             });
-    
+        
             setUserReview({ rating: '', comment: '' });
         } catch (error) {
             console.error('Failed to submit review:', error);
@@ -149,18 +151,16 @@ const MovieDetailsPage = () => {
     if (!movie) return <p>No movie found</p>;
 
     const renderUserReviews = () => {
-    if (!movie.userReviews || movie.userReviews.length === 0) {
-        return <p>No user reviews available.</p>;
-    }
-
-    return movie.userReviews.map((review, index) => (
-        <div key={index} className="user-review">
-            <p><strong>User:</strong> {review.username}</p>
-            <p><strong>Rating:</strong> {review.rating}/10</p>
-            <p><strong>Review:</strong> {review.comment}</p>
-        </div>
-    ));
-};
+        return userReviews.length > 0 ? (
+            userReviews.map((review, index) => (
+                <div key={index} className="user-review">
+                    <p><strong>User:</strong> {review.username}</p>
+                    <p><strong>Rating:</strong> {review.rating}/10</p>
+                    <p><strong>Review:</strong> {review.comment}</p>
+                </div>
+            ))
+        ) : <p>No user reviews available.</p>;
+    };
 
     return (
         <div className="movie-details">
