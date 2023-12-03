@@ -350,7 +350,6 @@ function HomePage() {
   // Rest of the HomePage component remains the same
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    console.log("Search term updated:", e.target.value); // Add this line for debugging
   };
 
   const handleCategoryChange = (e) => {
@@ -384,10 +383,6 @@ function HomePage() {
             throw new Error('Failed to add movie to watchlist');
           }
           return response.json();
-        })
-        .then(data => {
-          console.log('Movie added to watchlist:', data);
-          // Handle the success scenario, perhaps update the UI or state
         })
         .catch((error) => {
           console.error('Error:', error);

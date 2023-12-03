@@ -32,17 +32,18 @@ const CastAndDirectorPage = () => {
                 // Fetch director details
                 const directorData = await fetchDataById('directors', movieData.director);
                 setDirector(directorData);
-                console.log("Director Data:", directorData); // Log director data
     
                 // Fetch cast (actors) details
-                const castData = await Promise.all(movieData.cast.map(actorId => fetchDataById('actors', actorId)));
-                setCast(castData);
-                console.log("Cast Data:", castData); // Log cast data
+                if (Array.isArray(movieData.cast)) {
+                    const castData = await Promise.all(movieData.cast.map(actorId => fetchDataById('actors', actorId)));
+                    setCast(castData);
+                }
     
                 // Fetch writers details
-                const writersData = await Promise.all(movieData.writers.map(writerId => fetchDataById('writers', writerId)));
-                setWriters(writersData);
-                console.log("Writers Data:", writersData); // Log writers data
+                if (Array.isArray(movieData.writers)) {
+                    const writersData = await Promise.all(movieData.writers.map(writerId => fetchDataById('writers', writerId)));
+                    setWriters(writersData);
+                }
     
                 setLoading(false);
             } catch (err) {
@@ -72,22 +73,22 @@ const CastAndDirectorPage = () => {
                 )}
             </div>
             <div className="cast-container">
-                {cast.map((actor, index) => (
+                {cast?.map((actor, index) => (
                     <div key={index} className="cast-card">
                         <img src={actor.posterImage} alt={actor.name} />
                         <p>{actor.name}</p>
-                        <p>Born: {actor.dateOfBirth}</p>
+                        <p>Born: {new Date(actor.dateOfBirth).toLocaleDateString()}</p>
                         <p>Bio: {actor.biography}</p>
                     </div>
                 ))}
             </div>
             <div className="writers-container">
-                {writers.map((writer, index) => (
+                {writers?.map((writer, index) => (
                     <div key={index} className="writer-card">
-                    <img src={writer.posterImage} alt={writer.name} />
-                    <p key={index}>Writer: {writer.name}</p>
-                    <p key={index}>Born: {writer.dateOfBirth}</p>
-                    <p key={index}>Biography: {writer.biography}</p>
+                        <img src={writer.posterImage} alt={writer.name} />
+                        <p key={index}>Writer: {writer.name}</p>
+                        <p key={index}>Born: {writer.dateOfBirth}</p>
+                        <p key={index}>Biography: {writer.biography}</p>
                     </div>
                 ))}
             </div>

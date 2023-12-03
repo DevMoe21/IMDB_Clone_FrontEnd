@@ -22,7 +22,6 @@ const MovieDetailsPage = () => {
         try {
             const response = await fetch(`http://localhost:5000/api/${endpoint}/${id}`);
             const data = await response.json();
-            console.log(`Data from ${endpoint}:`, data); // Log the data
             return data.name;
         } catch (error) {
             console.error(`Failed to fetch ${endpoint}:`, error);
@@ -117,7 +116,6 @@ const MovieDetailsPage = () => {
             movieId: id,
             username: currentUser?.username || 'Anonymous'
         };
-        console.log('Submitting Review:', reviewSubmission);
 
         try {
             const response = await fetch(`http://localhost:5000/api/reviews`, {
@@ -129,7 +127,6 @@ const MovieDetailsPage = () => {
             if (!response.ok) throw new Error('Error submitting review');
     
             const newReview = await response.json();
-            console.log('Received New Review:', newReview); // Check response data
     
             setMovie(prevMovie => {
                 const updatedReviews = [newReview, ...(prevMovie.userReviews || [])];

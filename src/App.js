@@ -24,7 +24,7 @@ function App() {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/user-profile" element={<UserProfilePage/>} />
           <Route path="/watchlist" element={<Watchlist />} />
-          <Route path="/cast-and-director" element={<CastAndDirectorPage/>}/>
+          <Route path="/cast-and-director/:id" element={<CastAndDirectorPage/>}/>
           <Route path="AddToWatchlist" element={<Watchlist />} />
         </Routes>
         <Footer />
