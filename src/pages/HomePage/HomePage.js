@@ -93,6 +93,7 @@ function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
 function FeaturedToday({ onMovieClick, onAddToWatchlist }) {
   const [featuredMovies, setFeaturedMovies] = useState([]);
   const scrollContainerRef = useRef(null);
+  const [watchlistStatus, setWatchlistStatus] = useState({});
 
   useEffect(() => {
     // Fetch data for FeaturedToday
@@ -127,6 +128,12 @@ function FeaturedToday({ onMovieClick, onAddToWatchlist }) {
     });
   };
 
+  const handleAddToWatchlist = (movieId, e) => {
+    e.stopPropagation();
+    onAddToWatchlist(movieId);
+    setWatchlistStatus({ ...watchlistStatus, [movieId]: true });
+  };
+
   return (
     <div className="featured-today">
       <h2>Featured Today</h2>
@@ -138,10 +145,12 @@ function FeaturedToday({ onMovieClick, onAddToWatchlist }) {
             <div className="movie-info">
               <h3>{movie.title}</h3>
               <p>Rating: {movie.rating}/10</p>
-              <button className="addToWatchlist" onClick={(e) => {
-                e.stopPropagation(); // Prevents the movie click event
-                onAddToWatchlist(movie._id);
-              }}>Add to Watchlist</button>
+               <button 
+                className="addToWatchlist" 
+                onClick={(e) => handleAddToWatchlist(movie._id, e)}
+              >
+                {watchlistStatus[movie._id] ? "Movie Added" : "Add to Watchlist"}
+              </button>
             </div>
           </div>
         ))}
@@ -153,6 +162,7 @@ function FeaturedToday({ onMovieClick, onAddToWatchlist }) {
 
 function ComingSoon({ onMovieClick, onAddToWatchlist }) {
   const [comingSoonMovies, setComingSoonMovies] = useState([]);
+  const [watchlistStatus, setWatchlistStatus] = useState({});
   const scrollContainerRef = useRef(null);
 
   useEffect(() => {
@@ -188,6 +198,12 @@ function ComingSoon({ onMovieClick, onAddToWatchlist }) {
     });
   };
 
+  const handleAddToWatchlist = (movieId, e) => {
+    e.stopPropagation();
+    onAddToWatchlist(movieId);
+    setWatchlistStatus({ ...watchlistStatus, [movieId]: true });
+  };
+
   return (
     <div className="coming-soon">
       <h2>Coming Soon</h2>
@@ -199,10 +215,12 @@ function ComingSoon({ onMovieClick, onAddToWatchlist }) {
             <div className="movie-info">
               <h3>{movie.title}</h3>
               <p>Rating: {movie.rating}/10</p>
-              <button className="addToWatchlist" onClick={(e) => {
-                e.stopPropagation();
-                onAddToWatchlist(movie._id);
-              }}>Add to Watchlist</button>
+              <button 
+                className="addToWatchlist" 
+                onClick={(e) => handleAddToWatchlist(movie._id, e)}
+              >
+                {watchlistStatus[movie._id] ? "Movie Added" : "Add to Watchlist"}
+              </button>
             </div>
           </div>
         ))}
@@ -214,6 +232,7 @@ function ComingSoon({ onMovieClick, onAddToWatchlist }) {
 
 function TopBoxOffice({ onMovieClick, onAddToWatchlist }) {
   const [topMovies, setTopMovies] = useState([]);
+  const [watchlistStatus, setWatchlistStatus] = useState({});
   const scrollContainerRef = useRef(null);
 
   useEffect(() => {
@@ -249,6 +268,12 @@ function TopBoxOffice({ onMovieClick, onAddToWatchlist }) {
     });
   };
 
+  const handleAddToWatchlist = (movieId, e) => {
+    e.stopPropagation();
+    onAddToWatchlist(movieId);
+    setWatchlistStatus({ ...watchlistStatus, [movieId]: true });
+  };
+
   return (
     <div className="top-box-office">
       <h2>Top Box Office</h2>
@@ -260,10 +285,12 @@ function TopBoxOffice({ onMovieClick, onAddToWatchlist }) {
             <div className="movie-info">
               <h3>{movie.title}</h3>
               <p>Rating: {movie.rating}/10</p>
-              <button className="addToWatchlist" onClick={(e) => {
-                e.stopPropagation(); // Prevents the movie click event
-                onAddToWatchlist(movie._id);
-              }}>Add to Watchlist</button>
+              <button 
+                className="addToWatchlist" 
+                onClick={(e) => handleAddToWatchlist(movie._id, e)}
+              >
+                {watchlistStatus[movie._id] ? "Movie Added" : "Add to Watchlist"}
+              </button>
             </div>
           </div>
         ))}

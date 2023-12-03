@@ -1,31 +1,59 @@
-import React from 'react';
-import { useAuth } from '../../FireBase/AuthContext.js'; // Update this path as necessary
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../FireBase/AuthContext.js';
 import './WatchlistPage.css';
-import mockMovieDetails from '../MockDataPage.js';
-
 
 const Watchlist = () => {
-    const { currentUser, removeFromWatchlist } = useAuth();
+    const { currentUser,removeFromWatchlist } = useAuth();
+    const [watchlistMovies, setWatchlistMovies] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    if (!currentUser) return <div>Please log in</div>;
+    useEffect(() => {
+        if (currentUser && currentUser.email) {
+            setLoading(true);
+            fetch(`http://localhost:5000/api/userWatchlist/${currentUser.email}`) // assuming email is the key
+                .then(response => response.json())
+                .then(data => {
+                    if (data && Array.isArray(data.movies)) {
+                        setWatchlistMovies(data.movies);
+                    } else {
+                        console.error('Watchlist data is not in expected format:', data);
+                        setWatchlistMovies([]);
+                    }
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.error('Error fetching watchlist:', error);
+                    setLoading(false);
+                });
+        } else {
+            setLoading(false);
+        }
+    }, [currentUser]);
 
-    // Ensure moviesToDisplay is always an array
-    const moviesToDisplay = Array.isArray(currentUser.watchlist) && currentUser.watchlist.length > 0
-        ? currentUser.watchlist
-        : [mockMovieDetails]; // Wrap mockMovieDetails in an array
+    if (!currentUser) {
+        return <div>Please log in</div>;
+    }
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (watchlistMovies.length === 0) {
+        return <div>Your watchlist is empty.</div>;
+    }
 
     // Group movies by genre
-    const moviesByGenre = moviesToDisplay.reduce((acc, movie) => {
+    const moviesByGenre = watchlistMovies.reduce((acc, movie) => {
         const genre = movie.genre || 'Unknown'; // Handle movies without a genre
         acc[genre] = acc[genre] || [];
         acc[genre].push(movie);
         return acc;
     }, {});
 
-    if (!Array.isArray(moviesToDisplay)) {
-        console.error('moviesToDisplay is not an array', moviesToDisplay);
-        return <div>Error loading movies</div>;
-    }
+    const handleRemoveFromWatchlist = (movieId) => {
+        removeFromWatchlist(movieId);
+        setWatchlistMovies(watchlistMovies.filter(movie => movie.id !== movieId));
+    };
 
     return (
         <div className="watchlist">
@@ -39,7 +67,7 @@ const Watchlist = () => {
                                 <img src={movie.poster} alt={movie.title} className="watchlist-image" />
                                 <div className="watchlist-info">
                                     <span className="watchlist-title">{movie.title}</span>
-                                    <button onClick={() => removeFromWatchlist(movie.id)}>Remove</button>
+                                    <button onClick={() => handleRemoveFromWatchlist(movie.id)}>Remove</button>
                                 </div>
                             </div>
                         ))}
@@ -51,3 +79,4 @@ const Watchlist = () => {
 };
 
 export default Watchlist;
+
