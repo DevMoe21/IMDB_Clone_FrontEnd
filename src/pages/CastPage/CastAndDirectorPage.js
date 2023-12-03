@@ -8,6 +8,18 @@ const CastAndDirectorPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Fetch data by ID
+    const fetchDataById = async (endpoint, id) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/${endpoint}/${id}`);
+            const data = await response.json();
+            return data; // Assuming this returns the object with _id and other details
+        } catch (error) {
+            console.error(`Failed to fetch ${endpoint}:`, error);
+            return null;
+        }
+    };
+
     useEffect(() => {
         const fetchMovieDetails = async () => {
             try {

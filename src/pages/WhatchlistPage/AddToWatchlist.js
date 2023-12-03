@@ -30,7 +30,7 @@ function AddToWatchlist({ movieId }) {
   useEffect(() => {
     // Ensure we have the user and movieId before making the request
     if (user && user._id && movieId) {
-      fetch(`http://localhost:5000/api/UserWatchlist/users/${user._id}/UserWatchlist`, {
+      fetch(`http://localhost:5000/api/UserWatchlist/${user._id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

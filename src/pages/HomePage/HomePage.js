@@ -5,6 +5,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './HomePage.css';
 import AddToWatchlist from '../WhatchlistPage/AddToWatchlist.js'; // Adjust the path to match the location of AddToWatchlist.js
+import { useAuth } from '../../FireBase/AuthContext.js'; // Update the path as necessary
 
 // MovieCarousel Component
 function MovieCarousel({ onMovieClick, onAddToWatchlist }) {
@@ -271,6 +272,26 @@ function TopBoxOffice({ onMovieClick, onAddToWatchlist }) {
     </div>
   );
 }
+const useUser = () => {
+  const [user, setUser] = useState(null);
+  const { currentUser } = useAuth();
+
+  useEffect(() => {
+    if (currentUser && currentUser.email) {
+      fetch(`http://localhost:5000/api/users/email/${currentUser.email}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => setUser(data))
+        .catch(error => console.error('Error fetching user data:', error));
+    }
+  }, [currentUser]);
+
+  return user;
+};
 
 function HomePage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -319,6 +340,35 @@ function HomePage() {
     navigate(`/movie/${movieId}`);
   };
 
+    // Assuming you have a way to get the current user's data in HomePage
+    const currentUserData = useUser();
+
+    const handleAddToWatchlist = (movieId) => {
+      if (currentUserData && currentUserData._id && movieId) {
+        fetch(`http://localhost:5000/api/UserWatchlist/${currentUserData._id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ movieId: movieId }),
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to add movie to watchlist');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Movie added to watchlist:', data);
+          // Handle the success scenario, perhaps update the UI or state
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          // Handle the error scenario
+        });
+      }
+    };
+
   return (
     <div className="homepage">
       <div className="title-section">
@@ -366,10 +416,10 @@ function HomePage() {
         ) : (
           // Your standard movie categories are displayed if there's no search term
           <>
-            <MovieCarousel onMovieClick={handleMovieClick} onAddToWatchlist={AddToWatchlist} /* other props */ />
-            <FeaturedToday featuredMovies={featuredMovies} onMovieClick={handleMovieClick} /* other props */ />
-            <ComingSoon comingSoonMovies={comingSoonMovies} onMovieClick={handleMovieClick} /* other props */ />
-            <TopBoxOffice topMovies={topBoxOfficeMovies} onMovieClick={handleMovieClick} /* other props */ />
+            <MovieCarousel onMovieClick={handleMovieClick} onAddToWatchlist={handleAddToWatchlist} /* other props */ />
+            <FeaturedToday featuredMovies={featuredMovies} onMovieClick={handleMovieClick} onAddToWatchlist={handleAddToWatchlist}/* other props */ />
+            <ComingSoon comingSoonMovies={comingSoonMovies} onMovieClick={handleMovieClick} /* other props */ onAddToWatchlist={handleAddToWatchlist} />
+            <TopBoxOffice topMovies={topBoxOfficeMovies} onMovieClick={handleMovieClick} /* other props */ onAddToWatchlist={handleAddToWatchlist} />
           </>
         )}
     </div>
