@@ -15,11 +15,22 @@ const CastAndDirectorPage = () => {
         try {
             const response = await fetch(`http://localhost:5000/api/${endpoint}/${id}`);
             const data = await response.json();
-            return data; // Assuming this returns the object with _id and other details
+            return data;
         } catch (error) {
             console.error(`Failed to fetch ${endpoint}:`, error);
             return null;
         }
+    };
+
+    const enrichMovieData = async (movieData) => {
+        const actors = Array.isArray(movieData.actor) ? movieData.actor : [movieData.actor];
+        const writers = Array.isArray(movieData.writer) ? movieData.writer : [movieData.writer];
+
+        const directorData = await fetchDataById('directors', movieData.director);
+        const actorsData = await Promise.all(actors.map(id => fetchDataById('actors', id)));
+        const writersData = await Promise.all(writers.map(id => fetchDataById('writers', id)));
+
+        return { director: directorData, actors: actorsData, writers: writersData };
     };
 
     useEffect(() => {
@@ -29,26 +40,15 @@ const CastAndDirectorPage = () => {
                 if (!res.ok) throw new Error('Failed to fetch movie data');
                 const movieData = await res.json();
     
-                // Fetch director details
-                const directorData = await fetchDataById('directors', movieData.director);
-                setDirector(directorData);
+                const enrichedData = await enrichMovieData(movieData);
     
-                // Fetch cast (actors) details
-                if (Array.isArray(movieData.cast)) {
-                    const castData = await Promise.all(movieData.cast.map(actorId => fetchDataById('actors', actorId)));
-                    setCast(castData);
-                }
-    
-                // Fetch writers details
-                if (Array.isArray(movieData.writers)) {
-                    const writersData = await Promise.all(movieData.writers.map(writerId => fetchDataById('writers', writerId)));
-                    setWriters(writersData);
-                }
-    
-                setLoading(false);
+                setDirector(enrichedData.director);
+                setCast(enrichedData.actors);
+                setWriters(enrichedData.writers);
             } catch (err) {
                 console.error(err);
                 setError(err);
+            } finally {
                 setLoading(false);
             }
         };
@@ -63,36 +63,46 @@ const CastAndDirectorPage = () => {
         <div className="cast-director-page">
             <h1>Director, Cast, and Writers</h1>
             <div className="director-card">
-                {director && (
+                {director ? (
                     <>
                         <img src={director.posterImage} alt={director.name} />
                         <p>Director: {director.name}</p>
-                        <p>Born: {director.dateOfBirth}</p>
+                        <p>Born: {new Date(director.dateOfBirth).toLocaleDateString()}</p>
                         <p>Biography: {director.biography}</p>
                     </>
-                )}
+                ) : <p>Director information is not available.</p>}
             </div>
             <div className="cast-container">
-                {cast?.map((actor, index) => (
+                {cast && cast.length > 0 ? (
+                cast.map((actor, index) => (
                     <div key={index} className="cast-card">
-                        <img src={actor.posterImage} alt={actor.name} />
-                        <p>{actor.name}</p>
-                        <p>Born: {new Date(actor.dateOfBirth).toLocaleDateString()}</p>
-                        <p>Bio: {actor.biography}</p>
+                    <img src={actor.posterImage || 'default_actor_image.png'} alt={actor.name} />
+                    <p>{actor.name}</p>
+                    <p>Born: {actor.dateOfBirth ? new Date(actor.dateOfBirth).toLocaleDateString() : 'Unknown'}</p>
+                    <p>Bio: {actor.biography || 'Biography not available.'}</p>
                     </div>
-                ))}
+                ))
+                ) : (
+                <p>No cast information available.</p>
+                )}
             </div>
+
+            {/* Writers container */}
             <div className="writers-container">
-                {writers?.map((writer, index) => (
+                {writers && writers.length > 0 ? (
+                writers.map((writer, index) => (
                     <div key={index} className="writer-card">
-                        <img src={writer.posterImage} alt={writer.name} />
-                        <p key={index}>Writer: {writer.name}</p>
-                        <p key={index}>Born: {writer.dateOfBirth}</p>
-                        <p key={index}>Biography: {writer.biography}</p>
+                    <img src={writer.posterImage || 'default_writer_image.png'} alt={writer.name} />
+                    <p>Writer: {writer.name}</p>
+                    <p>Born: {writer.dateOfBirth ? new Date(writer.dateOfBirth).toLocaleDateString() : 'Unknown'}</p>
+                    <p>Biography: {writer.biography || 'Biography not available.'}</p>
                     </div>
-                ))}
+                ))
+                ) : (
+                <p>No writers information available.</p>
+                )}
             </div>
-        </div>
+            </div>
     );
 };
 
