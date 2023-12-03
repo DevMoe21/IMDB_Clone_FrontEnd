@@ -111,7 +111,7 @@ const Watchlist = () => {
 
     const handleAddToTopPicks = async (movieId) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/UserTopPicks/${user._id}`, {
+            const response = await fetch(`http://localhost:5000/api/userTopPicks/${user._id}`, {
                 method: 'POST', // or PUT if you create a specific endpoint for adding a movie
                 headers: {
                     'Content-Type': 'application/json',

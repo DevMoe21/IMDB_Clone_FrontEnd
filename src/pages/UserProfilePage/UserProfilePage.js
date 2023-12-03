@@ -38,13 +38,13 @@ function UserProfilePage() {
         if (user) {
             setUserData(user);
             setEditFormData({ username: user.username, gender: user.gender });
-            fetch(`http://localhost:5000/api/UserTopPicks/${user._id}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.movies) {
-                        setUserData({...userData, topPicks: data.movies});
-                    }
-                })
+            fetch(`http://localhost:5000/api/userTopPicks/${user._id}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Fetched top picks data:", data); // Add this line to log the data
+                if (data && data.movies) {
+                  setUserData(currentData => ({...currentData, topPicks: data.movies}));                }
+            })
                 .catch(error => console.error('Error fetching top picks:', error));
         }
     }, [user]);
