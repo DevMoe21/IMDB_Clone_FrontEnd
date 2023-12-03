@@ -83,26 +83,27 @@ function UserProfilePage() {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      // Update the local state first
-      setEditFormData({
-        ...editFormData,
-        username: editFormData.username, // Update username
-        gender: editFormData.gender, // Update gender
-        // Add other fields as needed
-      });
-  
-      const response = await fetch(`http://localhost:5000/api/users/${user._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editFormData)
-      });
-      const updatedUser = await response.json();
-    setUserData(updatedUser); // Update state with new data
-    setIsEditing(false);
-  } catch (error) {
-    console.error('Error updating user:', error);
-  }
+        const response = await fetch(`http://localhost:5000/api/users/${user._id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(editFormData)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update user data');
+        }
+
+        const updatedUser = await response.json();
+        setUserData(updatedUser); // Update state with new data
+        setIsEditing(false);
+
+        // If you are using a context or global state, update it here as well
+        // For example: updateUserContext(updatedUser);
+    } catch (error) {
+        console.error('Error updating user:', error);
+    }
 };
+
 
   const handleInputChange = (event) => {
     setEditFormData({
