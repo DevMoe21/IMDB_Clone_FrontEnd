@@ -1,47 +1,63 @@
-/* Header.css */
 /* Header Styles */
 .header {
-  background-color: #000; /* IMDb uses a black background */
-  color: #fff; /* White text */
+  background-color: #202020; /* Dark grey for a more sophisticated look */
+  color: #fff; /* White text for contrast */
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Optional: adds a subtle shadow for depth */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* More pronounced shadow for depth */
 }
 
 .header-logo {
-  font-size: 24px;
-  font-weight: bold;
-  text-decoration: none;
-  color: purple;
   display: flex;
-  /* IMDb uses their logo here, you might want to add your own */
+  align-items: center;
 }
 
 .header-logo img {
-  max-width: 100px; /* Adjust the size as needed */
+  max-width: 120px; /* Slightly larger for better visibility */
   height: auto; /* Keeps the aspect ratio intact */
+  margin-right: 10px; /* Space between logo and title */
+}
+
+.header-logo-title {
+  font-size: 28px; /* Slightly larger font size */
+  font-weight: bold;
+  color: #e5e5e5; /* Light grey for a subtle contrast */
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
 }
 
 .header-nav .nav-link {
   color: #fff; /* White links */
-  margin-right: 20px;
+  margin: 0 15px; /* Balanced spacing on both sides */
   text-decoration: none; /* Removes underline from links */
+  font-weight: 500; /* Slightly bolder font for readability */
   transition: color 0.3s ease; /* Smooth transition for hover effect */
 }
 
 .header-nav .nav-link:hover {
-  color: #e5e5e5; /* Lighter grey on hover */
+  color: #ffa500; /* Orange color on hover for a pop effect */
+}
+
+.header-user-info {
+  display: flex;
+  align-items: center;
 }
 
 .user-avatar {
-  width: 30px; /* Adjust size as needed */
-  height: 30px;
-  border-radius: 50%;
-  margin-right: 10px;
+  width: 40px; /* Larger avatar for better visibility */
+  height: 40px;
+  border-radius: 50%; /* Circular avatar */
+  border: 2px solid #ffa500; /* Orange border for emphasis */
+  object-fit: cover; /* Ensures the image covers the area properly */
 }
 
 .user-username {
-  vertical-align: middle;
+  font-size: 18px; /* Slightly larger for readability */
+  margin-left: 10px; /* Space between avatar and username */
+  color: #e5e5e5; /* Light grey to match the logo color */
 }

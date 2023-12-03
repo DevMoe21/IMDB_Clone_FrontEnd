@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../FireBase/AuthContext'; 
 import './MovieDetailsPage.css';
 
 const MovieDetailsPage = () => {
@@ -8,6 +9,7 @@ const MovieDetailsPage = () => {
     const [movie, setMovie] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { currentUser } = useAuth();
     const [userReview, setUserReview] = useState({
         username: '',
         rating: '',
@@ -29,7 +31,7 @@ const MovieDetailsPage = () => {
     };
     
     const goToCastAndDirectorPage = () => {
-        navigate(`/cast_director/${id}`);
+        navigate(`//cast-and-director/${id}`);
     };
 
     const fetchUserReviews = async (movieId) => {
@@ -104,27 +106,37 @@ const MovieDetailsPage = () => {
     // Handle user review form submission
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
+
+        if (!userReview.rating || !userReview.comment.trim()) {
+            alert("Please fill in both rating and review.");
+            return;
+        }
+
+        const reviewSubmission = {
+            ...userReview,
+            movieId: id,
+            username: currentUser?.username || 'Anonymous'
+        };
+        console.log('Submitting Review:', reviewSubmission);
+
         try {
-            const response = await fetch(`http://localhost:5000/api/reviews/${id}`, {
+            const response = await fetch(`http://localhost:5000/api/reviews`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userReview),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(reviewSubmission),
             });
-            if (!response.ok) {
-                throw new Error('Error submitting review');
-            }
-            const updatedReviews = await fetchUserReviews(id);
-            setMovie((prevMovie) => ({
-                ...prevMovie,
-                userReviews: updatedReviews,
-            }));
-            setUserReview({
-                username: '',
-                rating: '',
-                comment: '',
+    
+            if (!response.ok) throw new Error('Error submitting review');
+    
+            const newReview = await response.json();
+            console.log('Received New Review:', newReview); // Check response data
+    
+            setMovie(prevMovie => {
+                const updatedReviews = [newReview, ...(prevMovie.userReviews || [])];
+                return { ...prevMovie, userReviews: updatedReviews };
             });
+    
+            setUserReview({ rating: '', comment: '' });
         } catch (error) {
             console.error('Failed to submit review:', error);
         }
@@ -133,6 +145,20 @@ const MovieDetailsPage = () => {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading movie: {error.message}</p>;
     if (!movie) return <p>No movie found</p>;
+
+    const renderUserReviews = () => {
+    if (!movie.userReviews || movie.userReviews.length === 0) {
+        return <p>No user reviews available.</p>;
+    }
+
+    return movie.userReviews.map((review, index) => (
+        <div key={index} className="user-review">
+            <p><strong>User:</strong> {review.username}</p>
+            <p><strong>Rating:</strong> {review.rating}/10</p>
+            <p><strong>Review:</strong> {review.comment}</p>
+        </div>
+    ));
+};
 
     return (
         <div className="movie-details">
@@ -194,24 +220,22 @@ const MovieDetailsPage = () => {
                 <h2>User Reviews</h2>
                 <div>
                     <form onSubmit={handleReviewSubmit}>
-                        <input
-                            type="text"
-                            placeholder="Your Name"
-                            value={userReview.username}
-                            onChange={(e) => setUserReview({ ...userReview, username: e.target.value })}
-                            required
-                        />
                         <select
                             value={userReview.rating}
                             onChange={(e) => setUserReview({ ...userReview, rating: e.target.value })}
                             required
-                        >
+                            >
                             <option value="">Select Rating</option>
-                            <option value="5">5 Stars</option>
-                            <option value="4">4 Stars</option>
-                            <option value="3">3 Stars</option>
-                            <option value="2">2 Stars</option>
-                            <option value="1">1 Star</option>
+                            <option value="10">10</option>
+                            <option value="9">9</option>
+                            <option value="8">8</option>
+                            <option value="7">7</option>
+                            <option value="6">6</option>
+                            <option value="5">5</option>
+                            <option value="4">4</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
                         </select>
                         <textarea
                             placeholder="Your Review"
@@ -230,10 +254,11 @@ const MovieDetailsPage = () => {
                                 {review.user && (
                                     <>
                                 <p><strong>User:</strong> {review.user.username}</p>
-                                <p><strong>Rating:</strong> {review.rating}/5</p>
+                                <p><strong>Rating:</strong> {review.rating}/10</p>
                                 <p><strong>Review:</strong> {review.content}</p>
                                 </>
                                 )}
+                                <div>{renderUserReviews()}</div>
                             </div>
                         ))
                     ) : (

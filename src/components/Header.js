@@ -1,22 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Header.css';
 import defaultProfilePic from './default-profile-picture.jpg';
 import FilmHubLogo from './FilmHubLogo.png';
 import { useAuth } from '../FireBase/AuthContext.js';
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 
 function Header() {
     const { currentUser } = useAuth();
     const auth = getAuth();
 
-    const [profilePicture, setProfilePicture] = useState(currentUser?.profilePicture || defaultProfilePic);
-    const [username, setUsername] = useState(currentUser?.username || 'User');
+    const [profilePicture, setProfilePicture] = useState(defaultProfilePic);
+    const [username, setUsername] = useState('User');
 
-    const updateHeaderInfo = (newProfilePicture, newUsername) => {
-        setProfilePicture(newProfilePicture);
-        setUsername(newUsername);
-    };
+    useEffect(() => {
+        if (currentUser && currentUser.email) {
+            fetch(`http://localhost:5000/api/users/email/${currentUser.email}`)
+                .then(response => response.json())
+                .then(data => {
+                    setProfilePicture(data.profilePicture || defaultProfilePic);
+                    setUsername(data.username || 'User');
+                    console.log('Fetched user data:', data); // Debugging log
+                })
+                .catch(error => {
+                    console.error('Error fetching user data:', error);
+                });
+        } else {
+            console.log('No currentUser found'); // Debugging log
+        }
+    }, [currentUser]);
 
     return (
         <header className="header">
@@ -29,7 +41,7 @@ function Header() {
                 {currentUser ? (
                     <>
                         <Link to="/user-profile" className="nav-link">
-                            <div className="user-info">
+                            <div className="header-user-info">
                                 <img
                                     src={profilePicture}
                                     alt={`${username}'s profile`}
