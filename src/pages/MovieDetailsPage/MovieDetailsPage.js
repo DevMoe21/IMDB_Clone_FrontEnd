@@ -31,7 +31,7 @@ const MovieDetailsPage = () => {
     };
     
     const goToCastAndDirectorPage = () => {
-        navigate(`//cast-and-director/${id}`);
+        navigate(`/cast-and-director/${id}`);
     };
 
     const fetchUserReviews = async (movieId) => {
