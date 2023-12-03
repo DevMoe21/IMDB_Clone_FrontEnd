@@ -1,84 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../FireBase/AuthContext.js'; // Update the path as necessary
+import { useAuth } from '../../FireBase/AuthContext.js';
 import './UserProfilePage.css';
 import defaultProfilePic from '../../components/default-profile-picture.jpg';
 import { getAuth, signOut } from 'firebase/auth';
 
 const useUser = () => {
-  const [user, setUser] = useState(null);
-  const { currentUser } = useAuth();
+    const [user, setUser] = useState(null);
+    const { currentUser } = useAuth();
 
-  useEffect(() => {
-    if (currentUser && currentUser.email) {
-      // Fetch user data from MongoDB by email
-      fetch(`http://localhost:5000/api/users/email/${currentUser.email}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => setUser(data))
-        .catch(error => console.error('Error fetching user data:', error));
-    }
-  }, [currentUser]);
+    useEffect(() => {
+        if (currentUser && currentUser.email) {
+            fetch(`http://localhost:5000/api/users/email/${currentUser.email}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => setUser(data))
+                .catch(error => console.error('Error fetching user data:', error));
+        }
+    }, [currentUser]);
 
-  return user;
+    return user;
 };
 
 function UserProfilePage() {
-  const [userData, setUserData] = useState(null); // State to store fetched user data
-  const [isEditing, setIsEditing] = useState(false);
-  const user = useUser();
-  const [editFormData, setEditFormData] = useState({
-    username: '',
-    gender: '',
-    // Initialize other fields as needed
-  });
+    const [userData, setUserData] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const user = useUser();
+    const [editFormData, setEditFormData] = useState({ username: '', gender: '' });
+    const auth = getAuth();
+    const navigate = useNavigate();
 
-  const auth = getAuth();
-  const navigate = useNavigate();
+    useEffect(() => {
+        if (user) {
+            setUserData(user);
+            setEditFormData({ username: user.username, gender: user.gender });
+            fetch(`http://localhost:5000/api/UserTopPicks/${user._id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.movies) {
+                        setUserData({...userData, topPicks: data.movies});
+                    }
+                })
+                .catch(error => console.error('Error fetching top picks:', error));
+        }
+    }, [user]);
 
-  useEffect(() => {
-    if (user) {
-      setUserData(user); // Set fetched data to state
-      setEditFormData({ // Initialize form data with fetched data
-        username: user.username,
-        gender: user.gender,
-        // Initialize other fields as needed
-      });
+    const formatDate = (dateString) => {
+        let date = new Date(dateString);
+        return !isNaN(date) ? date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : 'Unknown';
+    };
+
+    if (!userData) {
+        return <div>Loading user data...</div>;
     }
-  }, [user]);
 
-
-  const formatDate = (dateString) => {
-    let date;
-    if (dateString?.toDate) { // Check if it's a Firebase Timestamp
-      date = dateString.toDate();
-    } else if (typeof dateString === 'string' || dateString instanceof String) {
-      date = new Date(dateString); // Parse date string
-    }
-  
-    if (!isNaN(date)) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return date.toLocaleDateString(undefined, options);
-    } else {
-      return 'Unknown'; // Or any default text
-    }
-  };
-
-  if (!userData) {
-    return <div>Loading user data...</div>;
-  }
-
-  const handleEditProfile = () => {
-    setIsEditing(true);
-  };
-
-  const goToWatchlist = () => {
-    navigate('/watchlist');
-  };
+    const handleEditProfile = () => setIsEditing(true);
+    const goToWatchlist = () => navigate('/watchlist');
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
@@ -157,6 +138,20 @@ function UserProfilePage() {
     } catch (error) {
         console.error('Error updating profile picture:', error);
     }
+  };
+
+    const renderTopPicks = () => {
+      return userData.topPicks && userData.topPicks.length > 0 ? (
+          userData.topPicks.map((movie, index) => (
+              <div key={index} className="top-pick-item">
+                  <img src={movie.posterImage} alt={movie.title} className="top-pick-image" />
+                  <div className="top-pick-info">
+                      <h4>{movie.title}</h4>
+                      {/* Other movie info if needed */}
+                  </div>
+              </div>
+          ))
+      ) : <p>No top picks available</p>;
   };
 
   return (
@@ -246,11 +241,9 @@ function UserProfilePage() {
 
           <section className="user-top-picks">
             <h2>Top Picks</h2>
-            {user.topPicks && user.topPicks.length > 0 ? (
-              user.topPicks.map((pick) => <p key={pick.id}>{pick.movieTitle}</p>)
-            ) : (
-              <p>No top picks available</p>
-            )}
+             <div className="top-picks-container">
+                    {renderTopPicks()}
+                </div>
           </section>
 
           <section className="user-reviews">

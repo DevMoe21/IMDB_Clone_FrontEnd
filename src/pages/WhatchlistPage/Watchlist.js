@@ -109,7 +109,27 @@ const Watchlist = () => {
         })
     };
 
-    return (
+    const handleAddToTopPicks = async (movieId) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/UserTopPicks/${user._id}`, {
+                method: 'POST', // or PUT if you create a specific endpoint for adding a movie
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ movieId })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add movie to top picks');
+            }
+            // Optionally, refresh top picks in the UI or display a success message
+        } catch (error) {
+            console.error('Error adding movie to top picks:', error);
+            // Optionally, display an error message to the user
+        }
+    };
+
+     return (
         <div className="watchlist">
             <h2>Your Watchlist</h2>
             <div className="watchlist-movies">
@@ -118,7 +138,8 @@ const Watchlist = () => {
                         <img src={movie.posterImage} alt={movie.title} className="watchlist-image" />
                         <div className="watchlist-info">
                             <span className="watchlist-title">{movie.title}</span>
-                            <button onClick={(e) => handleRemoveFromWatchlist(e, movie._id)}>Remove</button>
+                            <button onClick={(e) => {e.stopPropagation(); handleRemoveFromWatchlist(movie._id);}}>Remove</button>
+                            <button onClick={(e) => {e.stopPropagation(); handleAddToTopPicks(movie._id);}}>Add to Top Picks</button>
                         </div>
                     </div>
                 ))}

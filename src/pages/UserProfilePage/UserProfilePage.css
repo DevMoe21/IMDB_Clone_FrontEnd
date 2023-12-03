@@ -101,6 +101,49 @@
   font-style: italic; /* Styling */
 }
 
+.user-top-picks {
+  /* Styling for the top picks section */
+  margin: 20px 0;
+}
+
+.top-picks-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.top-pick-item {
+  width: 200px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.top-pick-item:hover {
+  transform: translateY(-5px);
+}
+
+.top-pick-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.top-pick-info {
+  padding: 10px;
+  text-align: center;
+  color: #FFF;
+  background-color: #1a1a1a;
+}
+
+.top-pick-info h4 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
 /* Responsive Design */
 @media screen and (max-width: 768px) {
   .user-profile-container {
