@@ -280,7 +280,6 @@ function HomePage() {
   const [comingSoonMovies, setComingSoonMovies] = useState([]);
   const [topBoxOfficeMovies, setTopBoxOfficeMovies] = useState([]);
   const [featuredMovies, setFeaturedMovies] = useState([]);
-  const [selectedMovieId, setSelectedMovieId] = useState(null);
 
   // Fetch data for allMovies
   useEffect(() => {
@@ -312,17 +311,12 @@ function HomePage() {
   
   const filteredMovies = allMovies.filter(movie => {
     const titleMatch = movie.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const genreMatch = selectedCategory === 'All' || movie.genre.toLowerCase() === selectedCategory.toLowerCase();
+    const genreMatch = selectedCategory === 'All' || movie.genres.includes(selectedCategory);
     return titleMatch && genreMatch;
   });  
   
   const handleMovieClick = (movieId) => {
     navigate(`/movie/${movieId}`);
-  };
-
-  const handleAddToWatchlist = (movieId) => {
-    setSelectedMovieId(movieId);
-    console.log(`Movie with ID ${movieId} added to watchlist`);
   };
 
   return (
@@ -339,12 +333,12 @@ function HomePage() {
           />
           <select onChange={handleCategoryChange} className="category-select">
             <option value="All">All Genres</option>
-            <option value="Action">Action</option>
-            <option value="Drama">Drama</option>
-            <option value="Comedy">Comedy</option>
-            <option value="Romance">Romance</option>
-            <option value="Thriller">Thriller</option>
-            <option value="Horror">Horror</option>
+            <option value="28">Action</option>
+            <option value="18">Drama</option>
+            <option value="35">Comedy</option>
+            <option value="10749">Romance</option>
+            <option value="53">Thriller</option>
+            <option value="27">Horror</option>
             {/* Add more categories as needed */}
           </select>
         </div>
@@ -359,7 +353,6 @@ function HomePage() {
                 <div className="movie-info">
                   <h3>{movie.title}</h3>
                   {/* other movie details */}
-                  {selectedMovieId && <AddToWatchlist movieId={selectedMovieId} />}
                 </div>
               </div>
             ))
@@ -373,10 +366,10 @@ function HomePage() {
         ) : (
           // Your standard movie categories are displayed if there's no search term
           <>
-            <MovieCarousel onMovieClick={handleMovieClick} onAddToWatchlist={handleAddToWatchlist} />
-            <FeaturedToday featuredMovies={featuredMovies} onMovieClick={handleMovieClick} onAddToWatchlist={handleAddToWatchlist} />
-            <ComingSoon comingSoonMovies={comingSoonMovies} onMovieClick={handleMovieClick} onAddToWatchlist={handleAddToWatchlist} />
-            <TopBoxOffice topMovies={topBoxOfficeMovies} onMovieClick={handleMovieClick} onAddToWatchlist={handleAddToWatchlist} />
+            <MovieCarousel onMovieClick={handleMovieClick} onAddToWatchlist={AddToWatchlist} /* other props */ />
+            <FeaturedToday featuredMovies={featuredMovies} onMovieClick={handleMovieClick} /* other props */ />
+            <ComingSoon comingSoonMovies={comingSoonMovies} onMovieClick={handleMovieClick} /* other props */ />
+            <TopBoxOffice topMovies={topBoxOfficeMovies} onMovieClick={handleMovieClick} /* other props */ />
           </>
         )}
     </div>
