@@ -6,17 +6,18 @@ import './MovieDetailsPage.css';
 
 const MovieDetailsPage = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
+    const { currentUser } = useAuth();
+
     const [movie, setMovie] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { currentUser } = useAuth();
+    const [userReviews, setUserReviews] = useState([]);
     const [userReview, setUserReview] = useState({
-        username: '',
         rating: '',
         comment: '',
     });
-    const navigate = useNavigate();
-
+    
     // Fetch names using the respective ID
     const fetchDataById = async (endpoint, id) => {
         try {
@@ -75,21 +76,27 @@ const MovieDetailsPage = () => {
     };
     
     useEffect(() => {
-        const fetchMovieAndReviews = async () => {
+        const fetchMovieDetailsAndReviews = async () => {
+            setLoading(true);
+
             try {
-                const movieRes = await fetch(`http://localhost:5000/api/movies/${id}`);
-                if (!movieRes.ok) throw new Error('Failed to fetch movie details');
-                let movieData = await movieRes.json();
-    
-                movieData = await enrichMovieData(movieData);
-    
-                // Fetch reviews directly if reviewIds are available
-                if (movieData.reviews) {
-                    const reviews = await fetchUserReviews(id);
-                    setMovie({ ...movieData, userReviews: reviews });
-                } else {
-                    setMovie(movieData);
-                }
+                const movieResponse = await fetch(`http://localhost:5000/api/movies/${id}`);
+                if (!movieResponse.ok) throw new Error('Failed to fetch movie details');
+                
+                const movieData = await movieResponse.json();
+                setMovie(movieData);
+
+                const reviewsResponse = await fetch(`http://localhost:5000/api/reviews/movie/${id}`);
+                if (!reviewsResponse.ok) throw new Error('Failed to fetch reviews');
+
+                const reviewsData = await reviewsResponse.json();
+                const reviewsWithUsernames = await Promise.all(reviewsData.map(async (review) => {
+                    const userResponse = await fetch(`http://localhost:5000/api/users/${review.userId}`);
+                    const userData = await userResponse.json();
+                    return { ...review, username: userData.username };
+                }));
+
+                setUserReviews(reviewsWithUsernames);
             } catch (error) {
                 console.error(error);
                 setError(error);
@@ -97,42 +104,42 @@ const MovieDetailsPage = () => {
                 setLoading(false);
             }
         };
-    
-        fetchMovieAndReviews();
-    }, [id]); 
+
+        fetchMovieDetailsAndReviews();
+    }, [id]);
     
 
     // Handle user review form submission
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
-
+    
         if (!userReview.rating || !userReview.comment.trim()) {
             alert("Please fill in both rating and review.");
             return;
         }
-
+    
         const reviewSubmission = {
             ...userReview,
             movieId: id,
             username: currentUser?.username || 'Anonymous'
         };
-
+    
         try {
             const response = await fetch(`http://localhost:5000/api/reviews`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(reviewSubmission),
             });
-    
+        
             if (!response.ok) throw new Error('Error submitting review');
-    
+        
             const newReview = await response.json();
-    
+        
             setMovie(prevMovie => {
-                const updatedReviews = [newReview, ...(prevMovie.userReviews || [])];
+                const updatedReviews = prevMovie.userReviews ? [newReview, ...prevMovie.userReviews] : [newReview];
                 return { ...prevMovie, userReviews: updatedReviews };
             });
-    
+        
             setUserReview({ rating: '', comment: '' });
         } catch (error) {
             console.error('Failed to submit review:', error);
@@ -144,18 +151,16 @@ const MovieDetailsPage = () => {
     if (!movie) return <p>No movie found</p>;
 
     const renderUserReviews = () => {
-    if (!movie.userReviews || movie.userReviews.length === 0) {
-        return <p>No user reviews available.</p>;
-    }
-
-    return movie.userReviews.map((review, index) => (
-        <div key={index} className="user-review">
-            <p><strong>User:</strong> {review.username}</p>
-            <p><strong>Rating:</strong> {review.rating}/10</p>
-            <p><strong>Review:</strong> {review.comment}</p>
-        </div>
-    ));
-};
+        return userReviews.length > 0 ? (
+            userReviews.map((review, index) => (
+                <div key={index} className="user-review">
+                    <p><strong>User:</strong> {review.username}</p>
+                    <p><strong>Rating:</strong> {review.rating}/10</p>
+                    <p><strong>Review:</strong> {review.comment}</p>
+                </div>
+            ))
+        ) : <p>No user reviews available.</p>;
+    };
 
     return (
         <div className="movie-details">
