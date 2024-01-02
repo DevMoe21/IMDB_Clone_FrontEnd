@@ -13,7 +13,7 @@ const MovieDetailsPage = () => {
     const [userReview, setUserReview] = useState({
         username: '',
         rating: '',
-        comment: '',
+        content: '',
     });
     const navigate = useNavigate();
 
@@ -31,20 +31,6 @@ const MovieDetailsPage = () => {
     
     const goToCastAndDirectorPage = () => {
         navigate(`/cast-and-director/${id}`);
-    };
-
-    const fetchUserReviews = async (movieId) => {
-        try {
-            const response = await fetch(`http://localhost:5000/api/reviews/movie/${movieId}`);
-            if (!response.ok) {
-                throw new Error('Error fetching reviews');
-            }
-            const reviewsData = await response.json();
-            return reviewsData;
-        } catch (error) {
-            console.error('Failed to fetch reviews:', error);
-            return [];
-        }
     };
 
     // Enrich movie data with names
@@ -102,7 +88,7 @@ const MovieDetailsPage = () => {
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
 
-        if (!userReview.rating || !userReview.comment.trim()) {
+        if (!userReview.rating || !userReview.content.trim()) {
             alert("Please fill in both rating and review.");
             return;
         }
@@ -129,7 +115,7 @@ const MovieDetailsPage = () => {
                 return { ...prevMovie, userReviews: updatedReviews };
             });
     
-            setUserReview({ rating: '', comment: '' });
+            setUserReview({ rating: '', content: '' });
         } catch (error) {
             console.error('Failed to submit review:', error);
         }
@@ -148,7 +134,7 @@ const MovieDetailsPage = () => {
         <div key={index} className="user-review">
             <p><strong>User:</strong> {review.username}</p>
             <p><strong>Rating:</strong> {review.rating}/10</p>
-            <p><strong>Review:</strong> {review.comment}</p>
+            <p><strong>Review:</strong> {review.content}</p>
         </div>
     ));
 };
@@ -232,8 +218,8 @@ const MovieDetailsPage = () => {
                         </select>
                         <textarea
                             placeholder="Your Review"
-                            value={userReview.comment}
-                            onChange={(e) => setUserReview({ ...userReview, comment: e.target.value })}
+                            value={userReview.content}
+                            onChange={(e) => setUserReview({ ...userReview, content: e.target.value })}
                             required
                         ></textarea>
                         <button type="submit">Submit Review</button>
@@ -241,17 +227,17 @@ const MovieDetailsPage = () => {
                 </div>
                 <div>
                     {/* Display user reviews */}
-                    {movie.userReviews && movie.userReviews.length > 0 ? (
+                    {Array.isArray(movie.userReviews) ? (
+                        // If it's an array, map through the array
                         movie.userReviews.map((review, index) => (
                             <div key={index} className="user-review">
                                 {review.user && (
                                     <>
-                                <p><strong>User:</strong> {review.user.username}</p>
-                                <p><strong>Rating:</strong> {review.rating}/10</p>
-                                <p><strong>Review:</strong> {review.content}</p>
-                                </>
+                                        <p><strong>User:</strong> {review.user.username}</p>
+                                        <p><strong>Rating:</strong> {review.rating}/10</p>
+                                        <p><strong>Review:</strong> {review.content}</p>
+                                    </>
                                 )}
-                                <div>{renderUserReviews()}</div>
                             </div>
                         ))
                     ) : (

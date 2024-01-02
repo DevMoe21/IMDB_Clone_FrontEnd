@@ -30,7 +30,6 @@ function SignUpPage() {
     })
     .then(response => response.json())
     .then(data => {
-      console.log('User created in MongoDB Atlas:', data);
       navigate('/user-profile'); // Redirect after successful sign-up
     })
     .catch((error) => {

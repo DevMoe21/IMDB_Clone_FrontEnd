@@ -44,7 +44,6 @@ function AddToWatchlist({ movieId }) {
         return response.json();
       })
       .then(data => {
-        console.log('Movie added to watchlist:', data);
         setStatusMessage('Movie successfully added to watchlist!');
       })
       .catch((error) => {
